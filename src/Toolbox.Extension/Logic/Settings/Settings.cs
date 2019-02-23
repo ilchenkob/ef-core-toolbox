@@ -1,24 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Toolbox.Extension.Logic.Settings.Models;
 
 namespace Toolbox.Extension.Logic.Settings
 {
-    public class Settings
+    public class SettingsStore
     {
-        private static Lazy<Settings> _instance = new Lazy<Settings>(() => new Settings());
-
-        public static Settings Instance => _instance.Value;
-
-        public static void SetInstance(Settings instance)
+        private static Lazy<SettingsStore> _instance = new Lazy<SettingsStore>(() => new SettingsStore
         {
-            _instance = new Lazy<Settings>(() => instance);
+            MsSqlDatabaseConnectionSettings = new MsSqlDatabaseConnectionSettings()
+        });
+
+        public static SettingsStore Instance => _instance.Value;
+
+        public static void SetInstance(MsSqlDatabaseConnectionSettings msSqlConnectionSettings)
+        {
+            _instance = new Lazy<SettingsStore>(() => new SettingsStore
+            {
+                MsSqlDatabaseConnectionSettings = msSqlConnectionSettings
+            });
         }
 
-        private Settings() { }
+        private SettingsStore() { }
 
         public MsSqlDatabaseConnectionSettings MsSqlDatabaseConnectionSettings { get; set; }
     }

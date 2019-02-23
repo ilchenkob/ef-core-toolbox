@@ -1,7 +1,16 @@
-﻿namespace Toolbox.Extension.Logic.Settings.Models
+﻿using System;
+
+namespace Toolbox.Extension.Logic.Settings.Models
 {
+    [Serializable]
     public class MsSqlDatabaseConnectionSettings
     {
+        public MsSqlDatabaseConnectionSettings()
+        {
+            Server = Database = Username = Password = string.Empty;
+            IsSqlAuthSelected = false;
+        }
+
         public string Server { get; set; }
 
         public string Database { get; set; }

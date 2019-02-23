@@ -25,10 +25,10 @@
             </Grid.ColumnDefinitions>
             <CheckBox Grid.Column="0"
                       Content="Use database names"
-                      IsChecked="{Binding UseDbNames}"/>
+                      IsChecked="{Binding UseDbNames, Mode=TwoWay}"/>
             <CheckBox Grid.Column="1"
                       Content="Use data annotation attributes"
-                      IsChecked="{Binding UseDataAnnotations}"/>
+                      IsChecked="{Binding UseDataAnnotations, Mode=TwoWay}"/>
         </Grid>
         <local:TextInput Title="Output folder" Value="{Binding OutputPath, Mode=TwoWay}"/>
     </StackPanel>

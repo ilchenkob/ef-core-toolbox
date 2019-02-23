@@ -1,16 +1,17 @@
 ﻿using System;
-using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.Win32;
+using Newtonsoft.Json;
+using Toolbox.Extension.Logic.Settings;
+using Toolbox.Extension.Logic.Settings.Models;
 using Task = System.Threading.Tasks.Task;
 
 namespace Toolbox.Extension
@@ -37,8 +38,97 @@ namespace Toolbox.Extension
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(MenuCommandPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
-    public sealed class MenuCommandPackage : AsyncPackage
+    public sealed class MenuCommandPackage : AsyncPackage, IVsPersistSolutionOpts
     {
+        #region Solution related settings
+
+        private const string SettingsKey = "EfCoreToolboxSettingsKey";
+
+        public int SaveUserOptions(IVsSolutionPersistence pPersistence)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            pPersistence.SavePackageUserOpts(this, SettingsKey);
+            return VSConstants.S_OK;
+        }
+
+        public int LoadUserOptions(IVsSolutionPersistence pPersistence, uint grfLoadOpts)
+        {
+            try
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                pPersistence.LoadPackageUserOpts(this, SettingsKey);
+            }
+            finally
+            {
+                Marshal.ReleaseComObject(pPersistence);
+            }
+
+            return VSConstants.S_OK;
+        }
+
+        public int WriteUserOptions(IStream pOptionsStream, string pszKey)
+        {
+            if (pszKey == SettingsKey)
+            {
+                try
+                {
+                    using (var pStream = new DataStreamFromComStream(pOptionsStream))
+                        if (pStream != null && pStream.CanWrite)
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                var strValue = JsonConvert.SerializeObject(SettingsStore.Instance.MsSqlDatabaseConnectionSettings);
+                                var data = Encoding.ASCII.GetBytes(strValue);
+                                pStream.Write(data, 0, data.Length);
+                                pStream.Flush();
+                            }
+                        }
+                }
+                catch (Exception ex)
+                {
+                    // TODO: log exception
+                }
+            }
+
+            return VSConstants.S_OK;
+        }
+
+        public int ReadUserOptions(IStream pOptionsStream, string pszKey)
+        {
+            if (pszKey == SettingsKey)
+            {
+                try
+                {
+                    using (var pStream = new DataStreamFromComStream(pOptionsStream))
+                        if (pStream != null && pStream.CanRead)
+                        {
+                            using (var ms = new MemoryStream())
+                            {
+                                byte[] data = new byte[pStream.Length];
+                                pStream.Read(data, 0, data.Length);
+
+                                ms.Write(data, 0, data.Length);
+                                ms.Seek(0, SeekOrigin.Begin);
+                                var strValue = Encoding.ASCII.GetString(data);
+                                var msSqlConnectionSettings = JsonConvert.DeserializeObject<MsSqlDatabaseConnectionSettings>(strValue);
+
+                                if (msSqlConnectionSettings != null)
+                                    SettingsStore.SetInstance(msSqlConnectionSettings);
+                            }
+                        }
+                }
+                catch (Exception ex)
+                {
+                    // TODO: log exception
+                }
+            }
+
+            return VSConstants.S_OK;
+        }
+
+        #endregion
+
+
         /// <summary>
         /// MenuCommandPackage GUID string.
         /// </summary>

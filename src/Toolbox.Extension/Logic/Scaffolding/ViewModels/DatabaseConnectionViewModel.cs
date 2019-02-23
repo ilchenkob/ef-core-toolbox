@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 using System.Windows.Input;
 using Toolbox.Extension.Logic.DatabaseServices;
-using Toolbox.Extension.Logic.Models;
 using Toolbox.Extension.Logic.Scaffolding.DatabaseServices;
+using Toolbox.Extension.Logic.Settings;
+using Toolbox.Extension.Logic.Settings.Models;
 using Toolbox.Extension.UI.Services;
 
 namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
@@ -20,10 +21,25 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
             _messageBoxService = messageBoxService;
             _dbConnector = dbConnector;
 
-            Server =
-            Database =
-            Username =
-            Password = string.Empty;
+            if (SettingsStore.Instance?.MsSqlDatabaseConnectionSettings != null &&
+                !string.IsNullOrWhiteSpace(SettingsStore.Instance.MsSqlDatabaseConnectionSettings.Server))
+            {
+                Server = SettingsStore.Instance.MsSqlDatabaseConnectionSettings.Server;
+                Database = SettingsStore.Instance.MsSqlDatabaseConnectionSettings.Database;
+                Username = SettingsStore.Instance.MsSqlDatabaseConnectionSettings.Username;
+                Password = SettingsStore.Instance.MsSqlDatabaseConnectionSettings.Password;
+                IsSqlAuth = SettingsStore.Instance.MsSqlDatabaseConnectionSettings.IsSqlAuthSelected;
+
+                RememberConnection = true;
+            }
+            else
+            {
+                Server =
+                Database =
+                Username =
+                Password = string.Empty;
+                RememberConnection = false;
+            }
 
             TestConnectionCommand = new AsyncCommand(testConnection, () => IsValid);
         }
@@ -39,6 +55,8 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
                 _server = value;
                 NotifyPropertyChanged(() => Server);
                 NotifyPropertyChanged(() => IsValid);
+                if (RememberConnection)
+                    SettingsStore.Instance.MsSqlDatabaseConnectionSettings.Server = value;
             }
         }
 
@@ -51,6 +69,8 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
                 _database = value;
                 NotifyPropertyChanged(() => Database);
                 NotifyPropertyChanged(() => IsValid);
+                if (RememberConnection)
+                    SettingsStore.Instance.MsSqlDatabaseConnectionSettings.Database = value;
             }
         }
 
@@ -63,6 +83,8 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
                 _username = value;
                 NotifyPropertyChanged(() => Username);
                 NotifyPropertyChanged(() => IsValid);
+                if (RememberConnection)
+                    SettingsStore.Instance.MsSqlDatabaseConnectionSettings.Username = value;
             }
         }
 
@@ -75,6 +97,8 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
                 _password = value;
                 NotifyPropertyChanged(() => Password);
                 NotifyPropertyChanged(() => IsValid);
+                if (RememberConnection)
+                    SettingsStore.Instance.MsSqlDatabaseConnectionSettings.Password = value;
             }
         }
 
@@ -87,6 +111,39 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
                 _isSqlAuth = value;
                 NotifyPropertyChanged(() => IsSqlAuth);
                 NotifyPropertyChanged(() => IsValid);
+
+                if (RememberConnection)
+                    SettingsStore.Instance.MsSqlDatabaseConnectionSettings.IsSqlAuthSelected = value;
+            }
+        }
+
+        private bool _rememberConnection;
+        public bool RememberConnection
+        {
+            get => _rememberConnection;
+            set
+            {
+                if (value != _rememberConnection)
+                {
+                    if (!value)
+                    {
+                        SettingsStore.Instance.MsSqlDatabaseConnectionSettings = new MsSqlDatabaseConnectionSettings();
+                    }
+                    else
+                    {
+                        SettingsStore.Instance.MsSqlDatabaseConnectionSettings = new MsSqlDatabaseConnectionSettings
+                        {
+                            Server = Server,
+                            Database = Database,
+                            Username = Username,
+                            Password = Password,
+                            IsSqlAuthSelected = IsSqlAuth
+                        };
+                    }
+                }
+
+                _rememberConnection = value;
+                NotifyPropertyChanged(() => RememberConnection);
             }
         }
 

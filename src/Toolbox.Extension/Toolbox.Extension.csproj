@@ -68,7 +68,6 @@
     <Compile Include="Logic\DatabaseServices\MsSqlServerService.cs" />
     <Compile Include="Logic\Settings\Models\MsSqlDatabaseConnectionSettings.cs" />
     <Compile Include="Logic\Settings\Settings.cs" />
-    <Compile Include="Logic\Settings\VsPersistSolutionOptions.cs" />
     <Compile Include="MenuCommand.cs" />
     <Compile Include="MenuCommandPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -261,6 +260,9 @@
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAPICodePack.Shell.1.1.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />

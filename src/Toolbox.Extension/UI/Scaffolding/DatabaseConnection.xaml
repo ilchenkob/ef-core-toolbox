@@ -39,6 +39,7 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <CheckBox Grid.Column="0" VerticalAlignment="Center" 
+                      IsChecked="{Binding RememberConnection, Mode=TwoWay}"
                       Content="Remember connection"/>
             <Button Grid.Column="2"
                     Content="Test connection"
