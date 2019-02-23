@@ -1,0 +1,86 @@
+﻿<platformUI:DialogWindow x:Class="Toolbox.Extension.UI.Scaffolding.ScaffoldingWizard"
+              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+              xmlns:platformUI="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+              xmlns:local="clr-namespace:Toolbox.Extension.UI.Scaffolding"
+              xmlns:converters="clr-namespace:Toolbox.Extension.UI.Scaffolding.Converters"
+              WindowStartupLocation="CenterScreen"
+              Title="Database Context Scaffolding"
+              VerticalAlignment="Center"
+              HorizontalAlignment="Center"
+              mc:Ignorable="d"
+              MinHeight="500" MinWidth="600"
+              Height="580" Width="760">
+    <Window.Resources>
+        <converters:StepNumberToOkButtonVisibilityConverter x:Key="StepNumberToOkButtonVisibilityConverter"/>
+        <converters:StepNumberToBackButtonEnabledConverter x:Key="StepNumberToBackButtonEnabledConverter"/>
+        <converters:StepNumberToWizardStepContentConverter x:Key="StepNumberToWizardStepContentConverter"/>
+        <converters:ValidationToNextButtonEnabledConverter x:Key="ValidationToNextButtonEnabledConverter"/>
+        <Style x:Key="NavigationButton" TargetType="Button">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Height" Value="25"/>
+        </Style>
+        <Style x:Key="WizardStepContentPanel" TargetType="Grid">
+            <Setter Property="Margin" Value="16"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="8"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <local:WizardSteps Grid.Column="0" Grid.Row="0" CurrentStep="{Binding CurrentStepNumber}"/>
+        <StackPanel Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center" Orientation="Horizontal">
+            <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" />
+        </StackPanel>
+        <Grid Grid.Column="2" Grid.Row="0" Style="{StaticResource WizardStepContentPanel}"
+              Visibility="{Binding Path=CurrentStepNumber, Converter={StaticResource StepNumberToWizardStepContentConverter}, ConverterParameter=0}">
+                <local:DatabaseConnection DataContext="{Binding DatabaseConnectionVM}"/>
+        </Grid>
+        <Grid Grid.Column="2" Grid.Row="0" Style="{StaticResource WizardStepContentPanel}"
+              Visibility="{Binding Path=CurrentStepNumber, Converter={StaticResource StepNumberToWizardStepContentConverter}, ConverterParameter=1}">
+            <local:Tables DataContext="{Binding TablesVM}"/>
+        </Grid>
+        <Grid Grid.Column="2" Grid.Row="0" Style="{StaticResource WizardStepContentPanel}"
+              Visibility="{Binding Path=CurrentStepNumber, Converter={StaticResource StepNumberToWizardStepContentConverter}, ConverterParameter=2}">
+            <local:OutputParams DataContext="{Binding OutputParamsVM}"/>
+        </Grid>
+        <Grid Grid.Row="2" Grid.ColumnSpan="3" Margin="0, 14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1"
+                    Margin="0,0,4,0"
+                    Style="{StaticResource NavigationButton}"
+                    IsEnabled="{Binding Path=CurrentStepNumber, Converter={StaticResource StepNumberToBackButtonEnabledConverter}}"
+                    Command="{Binding BackCommand}">Back</Button>
+            <Button Grid.Column="2"
+                    Margin="4,0,4,0"
+                    Style="{StaticResource NavigationButton}"
+                    IsEnabled="{Binding State, Converter={StaticResource ValidationToNextButtonEnabledConverter}}"
+                    Command="{Binding NextCommand}">Next</Button>
+            <Button Grid.Column="2"
+                    Margin="4,0,4,0"
+                    IsEnabled="{Binding State, Converter={StaticResource ValidationToNextButtonEnabledConverter}}"
+                    Visibility="{Binding Path=CurrentStepNumber, Converter={StaticResource StepNumberToOkButtonVisibilityConverter}}"
+                    Style="{StaticResource NavigationButton}"
+                    Command="{Binding OkCommand}">OK</Button>
+            <Button
+                  Style="{StaticResource NavigationButton}"
+                  Margin="12,0,24,0"
+                  Grid.Column="3" Click="Cancel_Click">Cancel</Button>
+        </Grid>
+    </Grid>
+</platformUI:DialogWindow>

@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="Toolbox.Extension.UI.Scaffolding.WizardSteps"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:Toolbox.Extension.UI.Scaffolding.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="WizardStepsControl">
+    <UserControl.Resources>
+        <converters:StepNumberToWizardStepBrushConverter x:Key="StepNumberToWizardStepBrushConverter"/>
+        <Style x:Key="WizardStepTitle" TargetType="Label">
+            <Setter Property="Margin" Value="24,8"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="1" Content="Database connection"
+               Style="{StaticResource WizardStepTitle}"
+               Foreground="{Binding Path=CurrentStep, ElementName=WizardStepsControl, Converter={StaticResource StepNumberToWizardStepBrushConverter}, ConverterParameter=0}"/>
+        <Label Grid.Row="2" Content="Tables"
+               Style="{StaticResource WizardStepTitle}"
+               Foreground="{Binding Path=CurrentStep, ElementName=WizardStepsControl, Converter={StaticResource StepNumberToWizardStepBrushConverter}, ConverterParameter=1}"/>
+        <Label Grid.Row="3" Content="Output parameters"
+               Style="{StaticResource WizardStepTitle}"
+               Foreground="{Binding Path=CurrentStep, ElementName=WizardStepsControl, Converter={StaticResource StepNumberToWizardStepBrushConverter}, ConverterParameter=2}"/>
+    </Grid>
+</UserControl>

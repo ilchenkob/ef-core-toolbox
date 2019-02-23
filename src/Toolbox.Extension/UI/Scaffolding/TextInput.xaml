@@ -1,0 +1,19 @@
+﻿<UserControl x:Class="Toolbox.Extension.UI.Scaffolding.TextInput"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             x:Name="Root">
+    <StackPanel Orientation="Vertical">
+        <Label
+            Margin="0,4,0,2"
+            Content="{Binding Path=Title, ElementName=Root}"/>
+        <TextBox
+            Margin="0,0,0,4"
+            Height="24"
+            VerticalContentAlignment="Center"
+            Text="{Binding Path=Value, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+    </StackPanel>
+</UserControl>
