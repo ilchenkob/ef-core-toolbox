@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Toolbox.Extension.6105429b-c5ad-4817-9ceb-c839b702e76f" Version="0.44" Language="en-US" Publisher="Vitalii Ilchenko" />
+        <Identity Id="Toolbox.Extension.6105429b-c5ad-4817-9ceb-c839b702e76f" Version="0.8" Language="en-US" Publisher="Vitalii Ilchenko" />
         <DisplayName>EF Core Toolbox</DisplayName>
         <Description xml:space="preserve">GUI for EF Core console commands</Description>
     </Metadata>

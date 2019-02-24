@@ -1,8 +1,8 @@
-﻿using System;
+﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell;
+using System;
 using System.ComponentModel.Design;
 using System.Windows;
-using EnvDTE;
-using Microsoft.VisualStudio.Shell;
 using Toolbox.Extension.Logic.Scaffolding;
 using Toolbox.Extension.Logic.Scaffolding.DatabaseServices;
 using Toolbox.Extension.Logic.Scaffolding.ViewModels;
@@ -15,12 +15,12 @@ namespace Toolbox.Extension
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class MenuCommand
+    internal sealed class MenuCommand : IDisposable
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 0x0100;
+        public const int ScaffoldingCommandId = 0x0100;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -32,9 +32,14 @@ namespace Toolbox.Extension
         /// </summary>
         private readonly AsyncPackage package;
 
-        private IServiceProvider serviceProvider => this.package;
-
         private readonly EnvDTE80.DTE2 _ide;
+
+        private readonly OleMenuCommand _scaffoldingMenuItem;
+
+        /// <summary>
+        /// Gets the service provider from the owner package.
+        /// </summary>
+        private IAsyncServiceProvider serviceProvider => package;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MenuCommand"/> class.
@@ -42,16 +47,18 @@ namespace Toolbox.Extension
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private MenuCommand(AsyncPackage package, OleMenuCommandService commandService)
+        private MenuCommand(AsyncPackage package, OleMenuCommandService commandService, EnvDTE80.DTE2 ide)
         {
+            if (commandService == null) throw new ArgumentNullException(nameof(commandService));
+
             this.package = package ?? throw new ArgumentNullException(nameof(package));
-            commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+            _ide = ide ?? throw new ArgumentNullException(nameof(ide));
 
-            var menuCommandID = new CommandID(CommandSet, CommandId);
-            var menuItem = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
-            commandService.AddCommand(menuItem);
+            var scaffoldingCommandID = new CommandID(CommandSet, ScaffoldingCommandId);
+            _scaffoldingMenuItem = new OleMenuCommand(MenuItemCallback, scaffoldingCommandID);
+            _scaffoldingMenuItem.BeforeQueryStatus += QueryCommandStatus;
 
-            _ide = (EnvDTE80.DTE2)this.serviceProvider.GetService(typeof(DTE));
+            commandService.AddCommand(_scaffoldingMenuItem);
         }
 
         /// <summary>
@@ -64,28 +71,26 @@ namespace Toolbox.Extension
         }
 
         /// <summary>
-        /// Gets the service provider from the owner package.
-        /// </summary>
-        private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
-        {
-            get
-            {
-                return this.package;
-            }
-        }
-
-        /// <summary>
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         public static async Task InitializeAsync(AsyncPackage package)
         {
+            var ide = await package.GetServiceAsync(typeof(DTE)) as EnvDTE80.DTE2;
+            var commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+
             // Switch to the main thread - the call to AddCommand in MenuCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+            Instance = new MenuCommand(package, commandService, ide);
+        }
 
-            OleMenuCommandService commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-            Instance = new MenuCommand(package, commandService);
+        private void QueryCommandStatus(object sender, EventArgs e)
+        {
+            if (sender is OleMenuCommand menuCommand && menuCommand.CommandID.ID == ScaffoldingCommandId)
+            {   
+                menuCommand.Enabled = isScaffoldingCOmmandEnabled();
+            }
         }
 
         /// <summary>
@@ -123,6 +128,24 @@ namespace Toolbox.Extension
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             MessageBox.Show(owner, text, "Database Context Scaffolding", MessageBoxButton.OK, icon);
+        }
+
+        private bool isScaffoldingCOmmandEnabled()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            if (_ide?.Solution != null)
+            {
+                return _ide.Solution.IsOpen &&
+                    _ide.Solution.SolutionBuild.BuildState != vsBuildState.vsBuildStateInProgress;
+            }
+
+            return false;
+        }
+
+        public void Dispose()
+        {
+            if (_scaffoldingMenuItem != null)
+                _scaffoldingMenuItem.BeforeQueryStatus -= QueryCommandStatus;
         }
     }
 }
