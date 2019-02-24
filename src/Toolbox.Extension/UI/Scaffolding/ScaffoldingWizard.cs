@@ -19,24 +19,32 @@ namespace Toolbox.Extension.UI.Scaffolding
             Instance = this;
 
             _viewModel = viewModel;
-            _viewModel.CloseAction = () => Cancel_Click(null, null);
+            _viewModel.CloseAction = Close;
 
             DataContext = viewModel;
 
             KeyDown += OnKeyDown;
+            Closing += CloseHandler;
+        }
+
+        private void CloseHandler(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            KeyDown -= OnKeyDown;
+            Closing -= CloseHandler;
+
+            _viewModel?.Dispose();
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
-                Cancel_Click(null, null);
+                Close();
             }
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            _viewModel?.Dispose();
             Close();
         }
     }

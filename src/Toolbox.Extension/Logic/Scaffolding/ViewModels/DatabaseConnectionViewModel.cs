@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.Shell;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -7,6 +8,7 @@ using Toolbox.Extension.Logic.Scaffolding.DatabaseServices;
 using Toolbox.Extension.Logic.Settings;
 using Toolbox.Extension.Logic.Settings.Models;
 using Toolbox.Extension.UI.Services;
+using Task = System.Threading.Tasks.Task;
 
 namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 {
@@ -16,6 +18,7 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
         private readonly IDatabaseConnector _dbConnector;
         // private readonly DatabaseTypes _databaseType = DatabaseTypes.MsSqlServer;
 
+        private bool _isDisposing;
         private CancellationTokenSource _cancellationTokenSource;
 
         public DatabaseConnectionViewModel(
@@ -173,31 +176,58 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
                 password: Password);
         }
 
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                NotifyPropertyChanged(() => IsLoading);
+            }
+        }
+
         public Task RaiseCantConnect() => _messageBoxService.ShowErrorMessage("Can not connect to database");
 
         public void Dispose()
         {
-            if (_cancellationTokenSource != null)
+            _isDisposing = true;
+
+            try
             {
-                _cancellationTokenSource.Cancel(false);
-                _cancellationTokenSource.Dispose();
+                _cancellationTokenSource?.Cancel(false);
             }
+            catch (Exception) { }
         }
 
         private async Task testConnection()
         {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            IsLoading = true;
+
             var connectionString = GetConnectionString();
             var canConnect = false;
-            using (_cancellationTokenSource = new CancellationTokenSource(ScaffoldingWizardViewModel.DefaultTaskTimeout))
+
+            try
             {
-                canConnect = await _dbConnector.TryConnect(connectionString, _cancellationTokenSource.Token);
+                using (_cancellationTokenSource = new CancellationTokenSource(ScaffoldingWizardViewModel.DefaultTaskTimeout))
+                {
+                    canConnect = await _dbConnector.TryConnect(connectionString, _cancellationTokenSource.Token);
+                }
+                _cancellationTokenSource = null;
             }
-            _cancellationTokenSource = null;
+            catch (TaskCanceledException)
+            {
+                if (_isDisposing) return;
+            }
 
             if (canConnect)
                 await _messageBoxService.ShowInfoMessage("Succesfully connected");
-            else
+            else if (!_isDisposing)
                 await RaiseCantConnect();
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            IsLoading = false;
         }
     }
 }

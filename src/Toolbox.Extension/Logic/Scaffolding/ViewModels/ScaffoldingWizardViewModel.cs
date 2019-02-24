@@ -16,13 +16,14 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 {
     public class ScaffoldingWizardViewModel : BaseViewModel, IDisposable
     {
-        public static TimeSpan DefaultTaskTimeout => TimeSpan.FromSeconds(5);
+        public static TimeSpan DefaultTaskTimeout => TimeSpan.FromSeconds(15);
 
         private readonly IMessageBoxService _messageBoxService;
         private readonly IDatabaseService _dbService;
         private readonly IDatabaseConnector _dbConnector;
         private readonly IScaffoldingService _scaffoldingService;
 
+        private bool _isDisposing;
         private string _connectionString;
         private CancellationTokenSource _cancellationTokenSource;
 
@@ -123,40 +124,39 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 
             _connectionString = DatabaseConnectionVM.GetConnectionString();
 
+            var canConnect = false;
             try
             {
-                var canConnect = false;
                 using (_cancellationTokenSource = new CancellationTokenSource(DefaultTaskTimeout))
                 {
                     canConnect = await _dbConnector.TryConnect(_connectionString, _cancellationTokenSource.Token);
                 }
-                if (canConnect)
+            }
+            catch (TaskCanceledException) { }
+
+            if (canConnect)
+            {
+                var hasTables = false;
+                using (_cancellationTokenSource = new CancellationTokenSource(DefaultTaskTimeout))
                 {
-                    var hasTables = false;
-                    using (_cancellationTokenSource = new CancellationTokenSource(DefaultTaskTimeout))
-                    {
-                        var tables = await _dbService.GetTables(_connectionString, _cancellationTokenSource.Token);
-                        hasTables = await TablesVM.SetTables(tables);
-                    }
-                    if (hasTables)
-                    {
-                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                        NotifyPropertyChanged(() => State);
-                    }
-                    else
-                    {
-                        goBack();
-                    }
+                    var tables = await _dbService.GetTables(_connectionString, _cancellationTokenSource.Token);
+                    hasTables = await TablesVM.SetTables(tables);
+                }
+                if (hasTables)
+                {
+                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                    NotifyPropertyChanged(() => State);
                 }
                 else
                 {
-                    await RaiseCantConnect();
+                    goBack();
                 }
             }
-            catch (TaskCanceledException)
+            else if(!_isDisposing)
             {
                 await RaiseCantConnect();
             }
+
             _cancellationTokenSource = null;
         }
 
@@ -189,16 +189,17 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
             if (args.PropertyName == nameof(DatabaseConnectionVM.IsValid))
             {
                 NotifyPropertyChanged(() => State);
+            } else if (args.PropertyName == nameof(DatabaseConnectionVM.IsLoading))
+            {
+                IsLoading = DatabaseConnectionVM.IsLoading;
             }
         }
 
         public void Dispose()
         {
-            if (_cancellationTokenSource != null)
-            {
-                _cancellationTokenSource.Cancel(false);
-                _cancellationTokenSource.Dispose();
-            }
+            _isDisposing = true;
+
+            _cancellationTokenSource?.Cancel(false);
 
             DatabaseConnectionVM.PropertyChanged -= onValidationStateChanged;
             TablesVM.PropertyChanged -= onValidationStateChanged;

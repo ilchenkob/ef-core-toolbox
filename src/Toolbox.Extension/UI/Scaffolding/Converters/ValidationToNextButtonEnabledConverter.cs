@@ -11,16 +11,19 @@ namespace Toolbox.Extension.UI.Scaffolding.Converters
         {
             if (value is WizardState state)
             {
-                switch (state.CurrentStep)
+                if (!state.IsLoading)
                 {
-                    case 0:
-                        return state.IsConnectionValid;
-                    case 1:
-                        return state.IsConnectionValid && state.IsTablesValid;
-                    case 2:
-                        return state.IsConnectionValid && state.IsTablesValid && state.IsOutputValid;
-                    default:
-                        return false;
+                    switch (state.CurrentStep)
+                    {
+                        case 0:
+                            return state.IsConnectionValid;
+                        case 1:
+                            return state.IsConnectionValid && state.IsTablesValid;
+                        case 2:
+                            return state.IsConnectionValid && state.IsTablesValid && state.IsOutputValid;
+                        default:
+                            return false;
+                    }
                 }
             }
 

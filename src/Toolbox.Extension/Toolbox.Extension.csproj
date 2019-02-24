@@ -83,6 +83,7 @@
     <Compile Include="Logic\Scaffolding\ViewModels\TreeNodes\SchemaNodeViewModel.cs" />
     <Compile Include="Logic\Scaffolding\ViewModels\WizardState.cs" />
     <Compile Include="UI\Scaffolding\Converters\AuthTypeToRadioStateConverter.cs" />
+    <Compile Include="UI\Scaffolding\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="UI\Scaffolding\Converters\StepNumberToBackButtonEnabledConverter.cs" />
     <Compile Include="UI\Scaffolding\Converters\StepNumberToOkButtonVisibilityConverter.cs" />
     <Compile Include="UI\Scaffolding\Converters\StepNumberToWizardStepBrushConverter.cs" />

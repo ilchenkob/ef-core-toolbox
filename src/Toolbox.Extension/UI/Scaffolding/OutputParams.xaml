@@ -16,7 +16,7 @@
                 SelectedItem="{Binding SelectedProjectName}"
                 ItemsSource="{Binding ProjectNames}"/>
         </StackPanel>
-        <local:TextInput Title="Namespace" Value="{Binding Namespace, Mode=TwoWay}"/>
+        <local:TextInput Title="Namespace for entity classes and database context" Value="{Binding Namespace, Mode=TwoWay}"/>
         <local:TextInput Title="Database context class name" Value="{Binding ContextName, Mode=TwoWay}"/>
         <Grid Margin="0,12,0,4">
             <Grid.ColumnDefinitions>
@@ -42,6 +42,7 @@
                   Height="24"
                   Margin="0,4"
                   Padding="4,0"
+                     VerticalContentAlignment="Center"
                   Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Margin="4,4,0,4"
                     Grid.Column="1"
