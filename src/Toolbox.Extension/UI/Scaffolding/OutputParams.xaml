@@ -30,6 +30,23 @@
                       Content="Use data annotation attributes"
                       IsChecked="{Binding UseDataAnnotations, Mode=TwoWay}"/>
         </Grid>
-        <local:TextInput Title="Output folder" Value="{Binding OutputPath, Mode=TwoWay}"/>
+        <Label Margin="0,4,0,2"
+               Content="Output folder"/>
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="84"/>
+            </Grid.ColumnDefinitions>
+            <TextBox VerticalAlignment="Center"
+                  Grid.Column="0" 
+                  Height="24"
+                  Margin="0,4"
+                  Padding="4,0"
+                  Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Margin="4,4,0,4"
+                    Grid.Column="1"
+                    Content="Browse..."
+                    Click="BrowseFolder_Click"/>
+        </Grid>
     </StackPanel>
 </UserControl>

@@ -1,4 +1,7 @@
-﻿using System.Windows.Controls;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Windows;
+using System.Windows.Controls;
+using Toolbox.Extension.Logic.Scaffolding.ViewModels;
 
 namespace Toolbox.Extension.UI.Scaffolding
 {
@@ -12,26 +15,25 @@ namespace Toolbox.Extension.UI.Scaffolding
             InitializeComponent();
         }
 
-        //private void BrowseFolder_Click(object sender, RoutedEventArgs e)
-        //{
-        //  var dialog = new CommonOpenFileDialog
-        //  {
-        //    IsFolderPicker = true,
-        //    InitialDirectory = _viewModel.SelectedProjectPath,
-        //    AddToMostRecentlyUsedList = false,
-        //    DefaultDirectory = _viewModel.SelectedProjectPath,
-        //    EnsurePathExists = true,
-        //    Multiselect = false
-        //  };
+        private void BrowseFolder_Click(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is OutputParamsViewModel viewModel)
+            {
+                var dialog = new CommonOpenFileDialog
+                {
+                    IsFolderPicker = true,
+                    InitialDirectory = viewModel.OutputPath,
+                    AddToMostRecentlyUsedList = false,
+                    DefaultDirectory = viewModel.OutputPath,
+                    EnsurePathExists = true,
+                    Multiselect = false
+                };
 
-        //  if (dialog.ShowDialog(this) == CommonFileDialogResult.Ok)
-        //  {
-        //    var dtoFileName = Path.GetFileName(_viewModel.OutputFilePath);
-        //    var selectedPath = dialog.FileName.Contains(_viewModel.SelectedProjectPath)
-        //                        ? dialog.FileName.Substring(_viewModel.SelectedProjectPath.Length)
-        //                        : dialog.FileName;
-        //    _viewModel.OutputFilePath = Path.Combine(selectedPath, dtoFileName);
-        //  }
-        //}
+                if (dialog.ShowDialog(ScaffoldingWizard.Instance) == CommonFileDialogResult.Ok)
+                {
+                    viewModel.OutputPath = dialog.FileName;
+                }
+            }
+        }
     }
 }

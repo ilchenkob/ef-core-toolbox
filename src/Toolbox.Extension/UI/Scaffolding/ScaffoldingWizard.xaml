@@ -64,7 +64,7 @@
             <Button Grid.Column="1"
                     Margin="0,0,4,0"
                     Style="{StaticResource NavigationButton}"
-                    IsEnabled="{Binding Path=CurrentStepNumber, Converter={StaticResource StepNumberToBackButtonEnabledConverter}}"
+                    IsEnabled="{Binding State, Converter={StaticResource StepNumberToBackButtonEnabledConverter}}"
                     Command="{Binding BackCommand}">Back</Button>
             <Button Grid.Column="2"
                     Margin="4,0,4,0"
@@ -74,7 +74,7 @@
             <Button Grid.Column="2"
                     Margin="4,0,4,0"
                     IsEnabled="{Binding State, Converter={StaticResource ValidationToNextButtonEnabledConverter}}"
-                    Visibility="{Binding Path=CurrentStepNumber, Converter={StaticResource StepNumberToOkButtonVisibilityConverter}}"
+                    Visibility="{Binding CurrentStepNumber, Converter={StaticResource StepNumberToOkButtonVisibilityConverter}}"
                     Style="{StaticResource NavigationButton}"
                     Command="{Binding OkCommand}">OK</Button>
             <Button

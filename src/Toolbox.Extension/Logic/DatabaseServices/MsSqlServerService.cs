@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Toolbox.Extension.Logic.Scaffolding.DatabaseServices
 {
     internal class MsSqlServerService : IDatabaseService, IDatabaseConnector
     {
-        public async Task<Dictionary<string, List<string>>> GetTables(string connectionString)
+        public async Task<Dictionary<string, List<string>>> GetTables(string connectionString, CancellationToken cancellationToken)
         {
             var query = @"SELECT schm.name, obj.name
                         FROM [sys].[objects] as obj
@@ -43,7 +44,7 @@ namespace Toolbox.Extension.Logic.Scaffolding.DatabaseServices
             return result;
         }
 
-        public async Task<bool> TryConnect(string connectionString)
+        public async Task<bool> TryConnect(string connectionString, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(connectionString)) return false;
 
@@ -51,7 +52,7 @@ namespace Toolbox.Extension.Logic.Scaffolding.DatabaseServices
             {
                 using (var connection = new SqlConnection(connectionString))
                 {
-                    await connection.OpenAsync();
+                    await connection.OpenAsync(cancellationToken);
                     return connection.State == System.Data.ConnectionState.Open;
                 }
             }

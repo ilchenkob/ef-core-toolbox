@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Toolbox.Extension.Logic.Scaffolding.ViewModels.TreeNodes;
 using Toolbox.Extension.UI.Services;
+using Task = System.Threading.Tasks.Task;
 
 namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 {
@@ -21,6 +22,12 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
         public bool IsValid => Schemas.Any(s => s.IsEnabled);
 
         public ObservableCollection<NodeViewModel> Schemas { get; private set; }
+
+        public async Task ClearTables()
+        {
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            Schemas.Clear();
+        }
 
         public async Task<bool> SetTables(Dictionary<string, List<string>> schemas)
         {

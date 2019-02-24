@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using Toolbox.Extension.Logic.Scaffolding.ViewModels;
 
 namespace Toolbox.Extension.UI.Scaffolding.Converters
 {
@@ -8,9 +9,9 @@ namespace Toolbox.Extension.UI.Scaffolding.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (int.TryParse(value?.ToString(), out int stepNumber))
+            if (value is WizardState state)
             {
-                return stepNumber > 0;
+                return state.CurrentStep > 0 && !state.IsLoading;
             }
 
             return false;

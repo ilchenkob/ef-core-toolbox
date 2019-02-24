@@ -3,9 +3,10 @@ using Microsoft.VisualStudio.Threading;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Toolbox.Extension.Logic.Models;
-using Toolbox.Extension.Logic.Scaffolding;
 using Toolbox.Extension.Logic.Scaffolding.DatabaseServices;
 using Toolbox.Extension.Logic.Scaffolding.Models;
 using Toolbox.Extension.UI.Services;
@@ -15,12 +16,15 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 {
     public class ScaffoldingWizardViewModel : BaseViewModel, IDisposable
     {
+        public static TimeSpan DefaultTaskTimeout => TimeSpan.FromSeconds(5);
+
         private readonly IMessageBoxService _messageBoxService;
         private readonly IDatabaseService _dbService;
         private readonly IDatabaseConnector _dbConnector;
         private readonly IScaffoldingService _scaffoldingService;
 
         private string _connectionString;
+        private CancellationTokenSource _cancellationTokenSource;
 
         public ScaffoldingWizardViewModel(
             IMessageBoxService messageBoxService,
@@ -42,6 +46,7 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
             OutputParamsVM.PropertyChanged += onValidationStateChanged;
 
             State = new WizardState(
+                () => IsLoading,
                 () => CurrentStepNumber,
                 () => DatabaseConnectionVM.IsValid,
                 () => TablesVM.IsValid,
@@ -78,7 +83,19 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
                 NotifyPropertyChanged(() => State);
             }
         }
-        
+
+        private bool _isLoading;
+        public bool IsLoading
+        {
+            get => _isLoading;
+            set
+            {
+                _isLoading = value;
+                NotifyPropertyChanged(() => IsLoading);
+                NotifyPropertyChanged(() => State);
+            }
+        }
+
         public WizardState State { get; private set; }
 
         private void goBack()
@@ -88,15 +105,39 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 
         private async Task goNext()
         {
+            IsLoading = true;
+
             ++CurrentStepNumber;
             if (CurrentStepNumber == 1)
             {
-                _connectionString = DatabaseConnectionVM.GetConnectionString();
-                var canConnect = await _dbConnector.TryConnect(_connectionString);
+                await ConnectAndGetTables();
+            }
+
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            IsLoading = false;
+        }
+
+        private async Task ConnectAndGetTables()
+        {
+            await TablesVM.ClearTables();
+
+            _connectionString = DatabaseConnectionVM.GetConnectionString();
+
+            try
+            {
+                var canConnect = false;
+                using (_cancellationTokenSource = new CancellationTokenSource(DefaultTaskTimeout))
+                {
+                    canConnect = await _dbConnector.TryConnect(_connectionString, _cancellationTokenSource.Token);
+                }
                 if (canConnect)
                 {
-                    var tables = await _dbService.GetTables(_connectionString);
-                    var hasTables = await TablesVM.SetTables(tables);
+                    var hasTables = false;
+                    using (_cancellationTokenSource = new CancellationTokenSource(DefaultTaskTimeout))
+                    {
+                        var tables = await _dbService.GetTables(_connectionString, _cancellationTokenSource.Token);
+                        hasTables = await TablesVM.SetTables(tables);
+                    }
                     if (hasTables)
                     {
                         await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -109,11 +150,20 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
                 }
                 else
                 {
-                    await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                    await DatabaseConnectionVM.RaiseCantConnect();
-                    goBack();
+                    await RaiseCantConnect();
                 }
             }
+            catch (TaskCanceledException)
+            {
+                await RaiseCantConnect();
+            }
+            _cancellationTokenSource = null;
+        }
+
+        private async Task RaiseCantConnect()
+        {
+            await DatabaseConnectionVM.RaiseCantConnect();
+            goBack();
         }
 
         private async Task okExecute()
@@ -144,9 +194,17 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 
         public void Dispose()
         {
+            if (_cancellationTokenSource != null)
+            {
+                _cancellationTokenSource.Cancel(false);
+                _cancellationTokenSource.Dispose();
+            }
+
             DatabaseConnectionVM.PropertyChanged -= onValidationStateChanged;
             TablesVM.PropertyChanged -= onValidationStateChanged;
             OutputParamsVM.PropertyChanged -= onValidationStateChanged;
+
+            DatabaseConnectionVM.Dispose();
         }
     }
 }

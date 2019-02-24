@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Toolbox.Extension.Logic.Scaffolding.DatabaseServices
 {
     public interface IDatabaseConnector
     {
-        Task<bool> TryConnect(string connectionString);
+        Task<bool> TryConnect(string connectionString, CancellationToken cancellationToken);
     }
 }

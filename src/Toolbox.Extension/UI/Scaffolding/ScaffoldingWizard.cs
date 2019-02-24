@@ -11,9 +11,12 @@ namespace Toolbox.Extension.UI.Scaffolding
     {
         private readonly ScaffoldingWizardViewModel _viewModel;
 
+        public static Window Instance { get; private set; }
+
         public ScaffoldingWizard(ScaffoldingWizardViewModel viewModel)
         {
             InitializeComponent();
+            Instance = this;
 
             _viewModel = viewModel;
             _viewModel.CloseAction = () => Cancel_Click(null, null);

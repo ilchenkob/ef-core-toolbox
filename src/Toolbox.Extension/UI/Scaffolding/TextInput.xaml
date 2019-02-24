@@ -13,6 +13,7 @@
         <TextBox
             Margin="0,0,0,4"
             Height="24"
+            Padding="4,0"
             VerticalContentAlignment="Center"
             Text="{Binding Path=Value, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
     </StackPanel>

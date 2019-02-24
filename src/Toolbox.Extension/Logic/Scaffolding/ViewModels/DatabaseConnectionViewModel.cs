@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Toolbox.Extension.Logic.DatabaseServices;
 using Toolbox.Extension.Logic.Scaffolding.DatabaseServices;
@@ -8,11 +10,13 @@ using Toolbox.Extension.UI.Services;
 
 namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 {
-    public class DatabaseConnectionViewModel : BaseViewModel
+    public class DatabaseConnectionViewModel : BaseViewModel, IDisposable
     {
         private readonly IMessageBoxService _messageBoxService;
         private readonly IDatabaseConnector _dbConnector;
         // private readonly DatabaseTypes _databaseType = DatabaseTypes.MsSqlServer;
+
+        private CancellationTokenSource _cancellationTokenSource;
 
         public DatabaseConnectionViewModel(
             IMessageBoxService messageBoxService,
@@ -171,10 +175,25 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 
         public Task RaiseCantConnect() => _messageBoxService.ShowErrorMessage("Can not connect to database");
 
+        public void Dispose()
+        {
+            if (_cancellationTokenSource != null)
+            {
+                _cancellationTokenSource.Cancel(false);
+                _cancellationTokenSource.Dispose();
+            }
+        }
+
         private async Task testConnection()
         {
             var connectionString = GetConnectionString();
-            var canConnect = await _dbConnector.TryConnect(connectionString);
+            var canConnect = false;
+            using (_cancellationTokenSource = new CancellationTokenSource(ScaffoldingWizardViewModel.DefaultTaskTimeout))
+            {
+                canConnect = await _dbConnector.TryConnect(connectionString, _cancellationTokenSource.Token);
+            }
+            _cancellationTokenSource = null;
+
             if (canConnect)
                 await _messageBoxService.ShowInfoMessage("Succesfully connected");
             else
