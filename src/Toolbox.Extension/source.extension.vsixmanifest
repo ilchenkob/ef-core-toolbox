@@ -3,7 +3,7 @@
     <Metadata>
         <Identity Id="Toolbox.Extension.6105429b-c5ad-4817-9ceb-c839b702e76f" Version="0.8" Language="en-US" Publisher="Vitalii Ilchenko" />
         <DisplayName>EF Core Toolbox</DisplayName>
-        <Description xml:space="preserve">GUI for EF Core console commands</Description>
+        <Description xml:space="preserve">The EF Core Toolbox extension provides a set of tools to help you to avoid an executing console commands for Entity Framework Core based development.</Description>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0, 16.0)" />
