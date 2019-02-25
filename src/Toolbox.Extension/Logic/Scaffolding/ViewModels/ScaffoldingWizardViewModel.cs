@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Toolbox.Extension.Logic.Models;
-using Toolbox.Extension.Logic.Scaffolding.DatabaseServices;
+using Toolbox.Extension.Logic.DatabaseServices;
 using Toolbox.Extension.Logic.Scaffolding.Models;
 using Toolbox.Extension.UI.Services;
 using Task = System.Threading.Tasks.Task;
@@ -16,8 +16,6 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 {
     public class ScaffoldingWizardViewModel : BaseViewModel, IDisposable
     {
-        public static TimeSpan DefaultTaskTimeout => TimeSpan.FromSeconds(15);
-
         private readonly IMessageBoxService _messageBoxService;
         private readonly IDatabaseService _dbService;
         private readonly IDatabaseConnector _dbConnector;
@@ -127,7 +125,7 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
             var canConnect = false;
             try
             {
-                using (_cancellationTokenSource = new CancellationTokenSource(DefaultTaskTimeout))
+                using (_cancellationTokenSource = new CancellationTokenSource(Constants.DefaultTaskTimeout))
                 {
                     canConnect = await _dbConnector.TryConnect(_connectionString, _cancellationTokenSource.Token);
                 }
@@ -137,7 +135,7 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
             if (canConnect)
             {
                 var hasTables = false;
-                using (_cancellationTokenSource = new CancellationTokenSource(DefaultTaskTimeout))
+                using (_cancellationTokenSource = new CancellationTokenSource(Constants.DefaultTaskTimeout))
                 {
                     var tables = await _dbService.GetTables(_connectionString, _cancellationTokenSource.Token);
                     hasTables = await TablesVM.SetTables(tables);

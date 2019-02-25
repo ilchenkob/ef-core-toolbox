@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore.Design.Internal;
 using Microsoft.EntityFrameworkCore.Scaffolding;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,18 +10,12 @@ namespace Toolbox.Extension.Logic.Scaffolding
 {
     internal class ScaffoldingService : IScaffoldingService
     {
-        private const string ProgrammingLanguage = "C#";
-
         public bool ScaffoldDatabase(ScaffoldingExecutorParams scaffoldingParams)
         {
             try
             {
                 var serviceCollection = new ServiceCollection();
-
-                serviceCollection
-                    .AddEntityFrameworkDesignTimeServices()
-                    .AddSingleton<IOperationReporter, OperationReporter>()
-                    .AddSingleton<IOperationReportHandler, OperationReportHandler>();
+                serviceCollection.AddEntityFrameworkDesignTimeServices();
 
                 var designTimeServices = new SqlServerDesignTimeServices();
                 designTimeServices.ConfigureDesignTimeServices(serviceCollection);
@@ -31,7 +24,7 @@ namespace Toolbox.Extension.Logic.Scaffolding
                 var scaffolder = serviceProvider.GetService<IReverseEngineerScaffolder>();
 
                 var scaffoldingModel = scaffolder.ScaffoldModel(
-                        language: ProgrammingLanguage,
+                        language: Constants.ProgrammingLanguage,
                         connectionString: scaffoldingParams.ConnectionString,
                         tables: scaffoldingParams.Tables,
                         schemas: new List<string>(),
@@ -57,7 +50,6 @@ namespace Toolbox.Extension.Logic.Scaffolding
             }
             catch (Exception ex)
             {
-                var a = ex.Message;
                 return false;
             }
         }

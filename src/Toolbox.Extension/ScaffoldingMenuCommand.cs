@@ -4,7 +4,7 @@ using System;
 using System.ComponentModel.Design;
 using System.Windows;
 using Toolbox.Extension.Logic.Scaffolding;
-using Toolbox.Extension.Logic.Scaffolding.DatabaseServices;
+using Toolbox.Extension.Logic.DatabaseServices;
 using Toolbox.Extension.Logic.Scaffolding.ViewModels;
 using Toolbox.Extension.UI.Scaffolding;
 using Toolbox.Extension.UI.Services;
@@ -15,7 +15,7 @@ namespace Toolbox.Extension
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class MenuCommand : IDisposable
+    internal sealed class ScaffoldingMenuCommand : IDisposable
     {
         /// <summary>
         /// Command ID.
@@ -47,7 +47,7 @@ namespace Toolbox.Extension
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private MenuCommand(AsyncPackage package, OleMenuCommandService commandService, EnvDTE80.DTE2 ide)
+        private ScaffoldingMenuCommand(AsyncPackage package, OleMenuCommandService commandService, EnvDTE80.DTE2 ide)
         {
             if (commandService == null) throw new ArgumentNullException(nameof(commandService));
 
@@ -64,7 +64,7 @@ namespace Toolbox.Extension
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static MenuCommand Instance
+        public static ScaffoldingMenuCommand Instance
         {
             get;
             private set;
@@ -82,14 +82,14 @@ namespace Toolbox.Extension
             // Switch to the main thread - the call to AddCommand in MenuCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
-            Instance = new MenuCommand(package, commandService, ide);
+            Instance = new ScaffoldingMenuCommand(package, commandService, ide);
         }
 
         private void QueryCommandStatus(object sender, EventArgs e)
         {
             if (sender is OleMenuCommand menuCommand && menuCommand.CommandID.ID == ScaffoldingCommandId)
             {   
-                menuCommand.Enabled = isScaffoldingCOmmandEnabled();
+                menuCommand.Enabled = isScaffoldingCommandEnabled();
             }
         }
 
@@ -130,7 +130,7 @@ namespace Toolbox.Extension
             MessageBox.Show(owner, text, "Database Context Scaffolding", MessageBoxButton.OK, icon);
         }
 
-        private bool isScaffoldingCOmmandEnabled()
+        private bool isScaffoldingCommandEnabled()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (_ide?.Solution != null)

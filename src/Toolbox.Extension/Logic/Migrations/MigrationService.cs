@@ -1,39 +1,51 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Design.Internal;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations.Design;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Toolbox.Extension.Logic.Migrations
 {
     internal class MigrationService
     {
-        //public int Run()
-        //{
-        //    var serviceCollection = new ServiceCollection();
+        public int Run()
+        {
+            try
+            {
+                // var assemblyFileName = "";
+                // var assembly = Assembly.LoadFile(assemblyFileName);
+                DbContext context = new DbCtx();
+                ICurrentDbContext currentDbContext = new CurrentDbContext(context);
 
-        //    serviceCollection
-        //        .AddEntityFrameworkDesignTimeServices()
-        //        .AddSingleton<IOperationReporter, OperationReporter>()
-        //        .AddSingleton<IOperationReportHandler, OperationReportHandler>();
+                var serviceCollection = new ServiceCollection();
 
-        //    //if (scaffoldingParams.UseInflector)
-        //    //{
-        //    //    serviceCollection.AddSingleton<IPluralizer, Pluralizer>();
-        //    //}
+                serviceCollection
+                    .AddEntityFrameworkDesignTimeServices()
+                    .AddTransient(provider => currentDbContext);
 
-        //    var provider = new SqlServerDesignTimeServices();
-        //    provider.ConfigureDesignTimeServices(serviceCollection);
-        //    //if (!string.IsNullOrEmpty(reverseEngineerOptions.Dacpac))
-        //    //{
-        //    //    serviceCollection.AddSingleton<IDatabaseModelFactory, SqlServerDacpacDatabaseModelFactory>();
-        //    //}
+                var designTimeServices = new SqlServerDesignTimeServices();
+                designTimeServices.ConfigureDesignTimeServices(serviceCollection);
 
-        //    var serviceProvider = serviceCollection.BuildServiceProvider();
-        //    var sqlGenerator = serviceProvider.GetService<IMigrationsSqlGenerator>();
+                var serviceProvider = serviceCollection.BuildServiceProvider();
 
-        //    return 1;
-        //}
+                var migrationScaffolder = serviceProvider.GetService<IMigrationsScaffolder>();
+                
+                var migration = migrationScaffolder.ScaffoldMigration("", "", "");
+                migrationScaffolder.Save("", migration, "");
+                
+            }
+            catch (System.Exception ex)
+            {
+                var a = ex.Message;
+            }
+
+
+            return 1;
+        }
 
         //public static string GenerateCreateScript(this DatabaseFacade database)
         //{
@@ -55,5 +67,10 @@ namespace Toolbox.Extension.Logic.Migrations
 
         //    return builder.ToString();
         //}
+    }
+
+    internal class DbCtx : DbContext
+    {
+
     }
 }

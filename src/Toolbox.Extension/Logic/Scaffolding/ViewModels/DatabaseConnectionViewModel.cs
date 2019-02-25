@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Toolbox.Extension.Logic.DatabaseServices;
-using Toolbox.Extension.Logic.Scaffolding.DatabaseServices;
 using Toolbox.Extension.Logic.Settings;
 using Toolbox.Extension.Logic.Settings.Models;
 using Toolbox.Extension.UI.Services;
@@ -210,7 +209,7 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 
             try
             {
-                using (_cancellationTokenSource = new CancellationTokenSource(ScaffoldingWizardViewModel.DefaultTaskTimeout))
+                using (_cancellationTokenSource = new CancellationTokenSource(Constants.DefaultTaskTimeout))
                 {
                     canConnect = await _dbConnector.TryConnect(connectionString, _cancellationTokenSource.Token);
                 }

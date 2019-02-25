@@ -72,6 +72,13 @@
           <ButtonText>Database context and models scaffolding...</ButtonText>
         </Strings>
       </Button>
+
+      <Button guid="guidMenuCommandPackageCmdSet" id="MigrationCommandId" priority="0x0200" type="Button">
+        <Parent guid="guidMenuCommandPackageCmdSet" id="SubMenuGroup" />
+        <Strings>
+          <ButtonText>Migrations...</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -93,6 +100,7 @@
     <GuidSymbol name="guidMenuCommandPackageCmdSet" value="{208610e3-fcba-47f3-b084-da779d2fb5e2}">
       <IDSymbol name="EfCoreToolboxMenuGroup" value="0x1020" />
       <IDSymbol name="ScaffoldingCommandId" value="0x0100" />
+      <IDSymbol name="MigrationCommandId" value="0x0200" />
 
       <IDSymbol name="TopLevelMenu" value="0x1021"/>
       <IDSymbol name="SubMenuGroup" value="0x1150"/>

@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Toolbox.Extension.Logic.Scaffolding.DatabaseServices
+namespace Toolbox.Extension.Logic.DatabaseServices
 {
     internal class MsSqlServerService : IDatabaseService, IDatabaseConnector
     {

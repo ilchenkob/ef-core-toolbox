@@ -57,6 +57,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="Logic\DatabaseServices\IDatabaseConnector.cs" />
     <Compile Include="Logic\Migrations\MigrationService.cs" />
     <Compile Include="Logic\Models\DatabaseTypes.cs" />
@@ -69,7 +70,8 @@
     <Compile Include="Logic\DatabaseServices\MsSqlServerService.cs" />
     <Compile Include="Logic\Settings\Models\MsSqlDatabaseConnectionSettings.cs" />
     <Compile Include="Logic\Settings\Settings.cs" />
-    <Compile Include="MenuCommand.cs" />
+    <Compile Include="MigrationMenuCommand.cs" />
+    <Compile Include="ScaffoldingMenuCommand.cs" />
     <Compile Include="MenuCommandPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SolutionProcessor.cs" />
@@ -440,7 +442,9 @@
     </Reference>
     <Reference Include="WindowsBase" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Logic\Migrations\ViewModels\" />
+  </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.VisualStudio.SDK.Analyzers.15.8.33\analyzers\cs\Microsoft.VisualStudio.SDK.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.122\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
