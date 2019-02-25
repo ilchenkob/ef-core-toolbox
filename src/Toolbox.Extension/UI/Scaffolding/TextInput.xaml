@@ -3,9 +3,13 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:Toolbox.Extension.UI.Scaffolding.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="Root">
+    <UserControl.Resources>
+        <converters:TextInputTypeToVisibilityConverter x:Key="TextInputTypeToVisibilityConverter"/>
+    </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <Label
             Margin="0,4,0,2"
@@ -15,6 +19,15 @@
             Height="24"
             Padding="4,0"
             VerticalContentAlignment="Center"
+            Visibility="{Binding Path=IsPassword, ElementName=Root, Converter={StaticResource TextInputTypeToVisibilityConverter}, ConverterParameter=false}"
             Text="{Binding Path=Value, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+        <PasswordBox
+            x:Name="passwordBoxElement"
+            Margin="0,0,0,4"
+            Height="24"
+            Padding="4,0"
+            VerticalContentAlignment="Center"
+            Visibility="{Binding Path=IsPassword, ElementName=Root, Converter={StaticResource TextInputTypeToVisibilityConverter}, ConverterParameter=true}"
+            PasswordChanged="PasswordBox_PasswordChanged"/>
     </StackPanel>
 </UserControl>

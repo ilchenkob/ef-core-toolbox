@@ -28,6 +28,7 @@
                     IsEnabled="{Binding IsSqlAuth}"
                     Margin="8,0"/>
                 <local:TextInput Title="Password" Value="{Binding Password, Mode=TwoWay}"
+                    IsPassword="true"
                     IsEnabled="{Binding IsSqlAuth}"
                     Margin="8,0,8,8"/>
             </StackPanel>

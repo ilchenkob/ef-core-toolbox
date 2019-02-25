@@ -89,6 +89,7 @@
     <Compile Include="UI\Scaffolding\Converters\StepNumberToOkButtonVisibilityConverter.cs" />
     <Compile Include="UI\Scaffolding\Converters\StepNumberToWizardStepBrushConverter.cs" />
     <Compile Include="UI\Scaffolding\Converters\StepNumberToWizardStepContentConverter.cs" />
+    <Compile Include="UI\Scaffolding\Converters\TextInputTypeToVisibilityConverter.cs" />
     <Compile Include="UI\Scaffolding\Converters\ValidationToNextButtonEnabledConverter.cs" />
     <Compile Include="UI\Scaffolding\DatabaseConnection.xaml.cs">
       <DependentUpon>DatabaseConnection.xaml</DependentUpon>
