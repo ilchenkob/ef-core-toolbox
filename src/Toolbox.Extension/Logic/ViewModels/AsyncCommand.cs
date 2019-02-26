@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
+namespace Toolbox.Extension.Logic.ViewModels
 {
     public interface IAsyncCommand : IAsyncCommand<object>
     {

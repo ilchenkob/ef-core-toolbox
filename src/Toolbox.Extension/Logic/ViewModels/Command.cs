@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
+namespace Toolbox.Extension.Logic.ViewModels
 {
     public class Command : ICommand
     {

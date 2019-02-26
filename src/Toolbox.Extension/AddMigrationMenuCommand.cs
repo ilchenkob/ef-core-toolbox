@@ -1,21 +1,25 @@
 ﻿using EnvDTE;
 using Microsoft.VisualStudio.Shell;
+using Migrator.Logic.Models;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Windows;
 using Toolbox.Extension.Logic.Migrations;
+using Toolbox.Extension.Logic.Migrations.ViewModels;
+using Toolbox.Extension.UI.Migrations;
 using Toolbox.Extension.UI.Scaffolding;
 using Toolbox.Extension.UI.Services;
 using Task = System.Threading.Tasks.Task;
 
 namespace Toolbox.Extension
 {
-    internal sealed class MigrationMenuCommand : IDisposable
+    internal sealed class AddMigrationMenuCommand : IDisposable
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int MigrationgCommandId = 0x0200;
+        public const int AddMigrationgCommandId = 0x0200;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -42,14 +46,14 @@ namespace Toolbox.Extension
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private MigrationMenuCommand(AsyncPackage package, OleMenuCommandService commandService, EnvDTE80.DTE2 ide)
+        private AddMigrationMenuCommand(AsyncPackage package, OleMenuCommandService commandService, EnvDTE80.DTE2 ide)
         {
             if (commandService == null) throw new ArgumentNullException(nameof(commandService));
 
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             _ide = ide ?? throw new ArgumentNullException(nameof(ide));
 
-            var scaffoldingCommandID = new CommandID(CommandSet, MigrationgCommandId);
+            var scaffoldingCommandID = new CommandID(CommandSet, AddMigrationgCommandId);
             _scaffoldingMenuItem = new OleMenuCommand(MenuItemCallback, scaffoldingCommandID);
             _scaffoldingMenuItem.BeforeQueryStatus += QueryCommandStatus;
 
@@ -59,7 +63,7 @@ namespace Toolbox.Extension
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static MigrationMenuCommand Instance
+        public static AddMigrationMenuCommand Instance
         {
             get;
             private set;
@@ -77,12 +81,12 @@ namespace Toolbox.Extension
             // Switch to the main thread - the call to AddCommand in MenuCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
-            Instance = new MigrationMenuCommand(package, commandService, ide);
+            Instance = new AddMigrationMenuCommand(package, commandService, ide);
         }
 
         private void QueryCommandStatus(object sender, EventArgs e)
         {
-            if (sender is OleMenuCommand menuCommand && menuCommand.CommandID.ID == MigrationgCommandId)
+            if (sender is OleMenuCommand menuCommand && menuCommand.CommandID.ID == AddMigrationgCommandId)
             {
                 menuCommand.Enabled = isMigrationCommandEnabled();
             }
@@ -102,15 +106,18 @@ namespace Toolbox.Extension
                 var solutionProcessor = new SolutionProcessor(_ide);
                 var projects = solutionProcessor.GetAllSolutionProjects();
 
+                var projectItems = new Dictionary<string, List<string>>();
                 var migrationService = new MigrationService();
-                migrationService.Run();
+
+                migrationService.Run(new AddMigratorParams());
+                // var view = new AddMigration(new AddMigrationViewModel(projectItems, migrationService));
             }
         }
 
         private async Task showMessageBox(ScaffoldingWizard owner, string text, MessageBoxImage icon)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            MessageBox.Show(owner, text, "Database Context Scaffolding", MessageBoxButton.OK, icon);
+            MessageBox.Show(owner, text, "Database Scaffolding", MessageBoxButton.OK, icon);
         }
 
         private bool isMigrationCommandEnabled()

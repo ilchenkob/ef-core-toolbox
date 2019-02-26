@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using Toolbox.Extension.Logic.ViewModels;
 
 namespace Toolbox.Extension.Logic.Scaffolding.ViewModels.TreeNodes
 {

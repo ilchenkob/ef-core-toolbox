@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq.Expressions;
 
-namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
+namespace Toolbox.Extension.Logic.ViewModels
 {
   public abstract class BaseViewModel : INotifyPropertyChanged
   {

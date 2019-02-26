@@ -6,45 +6,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Design;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
+using Migrator.Logic.Models;
+using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Toolbox.Extension.Logic.Migrations
 {
-    internal class MigrationService
+    public interface IMigrationService
     {
-        public int Run()
+        int Run(AddMigratorParams addMigratorParams);
+    }
+
+    internal class MigrationService : IMigrationService
+    {
+        public int Run(AddMigratorParams addMigratorParams)
         {
-            try
-            {
-                // var assemblyFileName = "";
-                // var assembly = Assembly.LoadFile(assemblyFileName);
-                DbContext context = new DbCtx();
-                ICurrentDbContext currentDbContext = new CurrentDbContext(context);
-
-                var serviceCollection = new ServiceCollection();
-
-                serviceCollection
-                    .AddEntityFrameworkDesignTimeServices()
-                    .AddTransient(provider => currentDbContext);
-
-                var designTimeServices = new SqlServerDesignTimeServices();
-                designTimeServices.ConfigureDesignTimeServices(serviceCollection);
-
-                var serviceProvider = serviceCollection.BuildServiceProvider();
-
-                var migrationScaffolder = serviceProvider.GetService<IMigrationsScaffolder>();
-                
-                var migration = migrationScaffolder.ScaffoldMigration("", "", "");
-                migrationScaffolder.Save("", migration, "");
-                
-            }
-            catch (System.Exception ex)
-            {
-                var a = ex.Message;
-            }
-
-
-            return 1;
+            var processRunner = new ProcessRunner();
+            return processRunner.Execute(addMigratorParams);
         }
 
         //public static string GenerateCreateScript(this DatabaseFacade database)

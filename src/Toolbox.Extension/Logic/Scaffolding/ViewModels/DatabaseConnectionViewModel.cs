@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Toolbox.Extension.Logic.DatabaseServices;
 using Toolbox.Extension.Logic.Settings;
 using Toolbox.Extension.Logic.Settings.Models;
+using Toolbox.Extension.Logic.ViewModels;
 using Toolbox.Extension.UI.Services;
 using Task = System.Threading.Tasks.Task;
 

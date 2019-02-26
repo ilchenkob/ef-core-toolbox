@@ -159,7 +159,7 @@ namespace Toolbox.Extension
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await ScaffoldingMenuCommand.InitializeAsync(this);
-            await MigrationMenuCommand.InitializeAsync(this);
+            await AddMigrationMenuCommand.InitializeAsync(this);
             await base.InitializeAsync(cancellationToken, progress);
         }
 
@@ -168,7 +168,7 @@ namespace Toolbox.Extension
         protected override void Dispose(bool disposing)
         {
             ScaffoldingMenuCommand.Instance?.Dispose();
-            MigrationMenuCommand.Instance?.Dispose();
+            AddMigrationMenuCommand.Instance?.Dispose();
             base.Dispose(disposing);
         }
     }

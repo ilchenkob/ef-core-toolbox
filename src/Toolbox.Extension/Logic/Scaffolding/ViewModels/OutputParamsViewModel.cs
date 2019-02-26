@@ -2,13 +2,12 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using Toolbox.Extension.Logic.Models;
+using Toolbox.Extension.Logic.ViewModels;
 
 namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 {
     public class OutputParamsViewModel : BaseViewModel
     {
-        private const string DefaultDbContextClassName = "DbContext"
-;
         private readonly IReadOnlyCollection<Project> _allSolutionProjects;
 
         public OutputParamsViewModel(
@@ -18,7 +17,7 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 
             ProjectNames = new ObservableCollection<string>(allSolutionProjects.Select(p => p.DisplayName));
             SelectedProjectName = ProjectNames.FirstOrDefault();
-            ContextName = DefaultDbContextClassName;
+            ContextName = Constants.DefaultDbContextClassName;
             UseDataAnnotations = false;
             UseDbNames = false;
         }

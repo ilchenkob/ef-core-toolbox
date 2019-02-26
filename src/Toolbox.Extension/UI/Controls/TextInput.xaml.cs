@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace Toolbox.Extension.UI.Scaffolding
+namespace Toolbox.Extension.UI.Controls
 {
     /// <summary>
     /// Interaction logic for TextInput.xaml

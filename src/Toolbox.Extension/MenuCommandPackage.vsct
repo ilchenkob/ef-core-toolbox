@@ -76,7 +76,7 @@
       <Button guid="guidMenuCommandPackageCmdSet" id="MigrationCommandId" priority="0x0200" type="Button">
         <Parent guid="guidMenuCommandPackageCmdSet" id="SubMenuGroup" />
         <Strings>
-          <ButtonText>Migrations...</ButtonText>
+          <ButtonText>Add migrations...</ButtonText>
         </Strings>
       </Button>
     </Buttons>

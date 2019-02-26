@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace Toolbox.Extension.UI.Scaffolding.Converters
+namespace Toolbox.Extension.UI.Controls.Converters
 {
     public class TextInputTypeToVisibilityConverter : IValueConverter
     {

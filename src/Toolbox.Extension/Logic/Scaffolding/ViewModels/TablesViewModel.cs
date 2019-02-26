@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Toolbox.Extension.Logic.Scaffolding.ViewModels.TreeNodes;
+using Toolbox.Extension.Logic.ViewModels;
 using Toolbox.Extension.UI.Services;
 using Task = System.Threading.Tasks.Task;
 
@@ -49,7 +50,6 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
                 Schemas.Add(node);
             }
 
-            NotifyPropertyChanged(() => Schemas);
             NotifyPropertyChanged(() => IsValid);
 
             return true;

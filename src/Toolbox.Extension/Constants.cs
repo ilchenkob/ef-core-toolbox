@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Toolbox.Extension
 {
@@ -10,6 +6,10 @@ namespace Toolbox.Extension
     {
         public const string ProgrammingLanguage = "C#";
 
+        public const string DefaultDbContextClassName = "DbContext";
+
         public static TimeSpan DefaultTaskTimeout => TimeSpan.FromSeconds(15);
+
+        public const string MigratorAssembly = "Migrator.Core.dll";
     }
 }

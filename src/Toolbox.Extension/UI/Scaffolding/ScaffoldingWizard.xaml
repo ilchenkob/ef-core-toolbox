@@ -7,7 +7,7 @@
               xmlns:local="clr-namespace:Toolbox.Extension.UI.Scaffolding"
               xmlns:converters="clr-namespace:Toolbox.Extension.UI.Scaffolding.Converters"
               WindowStartupLocation="CenterScreen"
-              Title="Database Context Scaffolding"
+              Title="Database Scaffolding"
               VerticalAlignment="Center"
               HorizontalAlignment="Center"
               mc:Ignorable="d"
@@ -144,7 +144,7 @@
                                     <Ellipse x:Name="ellipse7" Canvas.Top="34.25" Canvas.Left="7" />
                                     <Ellipse Width="39.5" Height="39.5" Canvas.Left="8.75" Canvas.Top="8" Visibility="Hidden"/>
                                 </Canvas>
-                                <Label Content="{Binding Path=Text}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <!--<Label Content="{Binding Path=Text}" HorizontalAlignment="Center" VerticalAlignment="Center"/>-->
                             </Grid>
                         </Border>
                     </ControlTemplate>
