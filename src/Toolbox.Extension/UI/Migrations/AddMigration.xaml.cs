@@ -27,5 +27,10 @@ namespace Toolbox.Extension.UI.Migrations
 
             DataContext = viewModel;
         }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Migrator.Logic;
 using Migrator.Logic.Models;
+using System;
+using System.Collections.Generic;
 
 namespace Migrator.Core
 {
@@ -7,31 +9,52 @@ namespace Migrator.Core
     {
         static int Main(string[] args)
         {
-            if (args == null || args.Length < 1)
+            if (args == null || args.Length == 0)
                 return ExitCode.InvalidArguments;
 
-            if (args[0] == CommandType.AddMigration)
+            try
             {
-                var p = new AddMigratorParams
+                if (args[0] == CommandType.AddMigration)
                 {
-                    AssemblyFileName = @"C:\Users\Vitalii_Ilchenko\source\repos\ConsoleApp9\ConsoleAppcore\bin\Debug\netcoreapp2.1\ConsoleAppcore.dll",
-                    ContextNamespace = "ConsoleAppcore.Test1",
-                    DbContextTypeFullName = "ConsoleAppcore.Test1.DbContextTest1",
-                    MigrationName = "Test_2341",
-                    OutputDir = @"C:\Users\Vitalii_Ilchenko\source\repos\ConsoleApp9\ConsoleAppcore\Migrations",
-                    ProjectDir = @"C:\Users\Vitalii_Ilchenko\source\repos\ConsoleApp9\ConsoleAppcore",
-                    SubNamespace = "MigrationsSpace"
-                };
-
-                var executor = new AddMigrationExecutor();
-                return executor.Run(p); //AddMigratorParams.FromArgumentsArray(args)
+                    var commandParams = AddMigrationParams.FromArgumentsArray(args);
+                    return new AddMigrationExecutor().Run(commandParams);
+                }
+                else if (args[0] == CommandType.ScriptMigration)
+                {
+                    var commandParams = ScriptMigrationParams.FromArgumentsArray(args);
+                    return new ScriptMigrationExecutor().Run(commandParams);
+                }
+                else if (args[0] == CommandType.FindDbContextSubtypes)
+                {
+                    var commandParams = FindDbContextSubtypeParams.FromArgumentsArray(args);
+                    var types = TypeFinder.GetDbContextTypeFullNamesFromAssebly(commandParams.AssemblyFileName);
+                    return writeResult(types);
+                }
+                else if (args[0] == CommandType.FindMigrationSubtypes)
+                {
+                    var commandParams = FindMigrationSubtypeParams.FromArgumentsArray(args);
+                    var types = TypeFinder.GetMigrationTypeFullNamesFromAssebly(commandParams.AssemblyFileName);
+                    return writeResult(types);
+                }
             }
-            else if (args[0] == CommandType.ScriptMigration)
+            catch (ArgumentException exception)
             {
-                // TODO: make script
+                Console.WriteLine(exception.Message);
+                return ExitCode.InvalidArguments;
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+                return ExitCode.Exception;
             }
 
             return ExitCode.InvalidCommand;
+        }
+
+        private static int writeResult(List<string> types)
+        {
+            Console.WriteLine(string.Join(";", types));
+            return ExitCode.Success;
         }
     }
 }

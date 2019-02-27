@@ -1,4 +1,4 @@
-﻿namespace Migrator.Logic
+﻿namespace Migrator.Logic.Models
 {
     public static class ExitCode
     {

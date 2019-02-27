@@ -6,6 +6,7 @@ using System.Linq;
 using Toolbox.Extension.Logic.Models;
 using EnvDTE;
 using Project = EnvDTE.Project;
+using System.IO;
 
 namespace Toolbox.Extension
 {
@@ -19,25 +20,6 @@ namespace Toolbox.Extension
         {
             _ide = ide ?? throw new NullReferenceException("IDE");
         }
-
-        //private IEnumerable<ProjectItem> getAllProjectItems(ProjectItems projectItems)
-        //{
-        //    foreach (ProjectItem item in projectItems)
-        //    {
-        //        yield return item;
-
-        //        if (item.SubProject != null)
-        //        {
-        //            foreach (var childItem in getAllProjectItems(item.SubProject.ProjectItems))
-        //                yield return childItem;
-        //        }
-        //        else
-        //        {
-        //            foreach (var childItem in getAllProjectItems(item.ProjectItems))
-        //                yield return childItem;
-        //        }
-        //    }
-        //}
 
         public IReadOnlyCollection<Logic.Models.Project> GetAllSolutionProjects()
         {
@@ -76,14 +58,19 @@ namespace Toolbox.Extension
                                                   ? projectItem.Name
                                                   : $"{parentFolder}{projectItem.Name}";
 
+                    var projRootPath = projectItem.FullName.Remove(projectItem.FullName.LastIndexOf('\\'));
+                    var projOutputPath = projectItem.ConfigurationManager.ActiveConfiguration.Properties.Item("OutputPath").Value.ToString();
+
                     return new List<Logic.Models.Project>
                     {
                         new Logic.Models.Project
                         {
                             DisplayName = projectDisplayName,
                             Name = projectItem.Name,
-                            Path = projectItem.FullName.Remove(projectItem.FullName.LastIndexOf('\\')),
+                            Path = projRootPath,
                             DefaultNamespace = projectItem.Properties.Item("DefaultNamespace").Value.ToString(),
+                            AssemblyName = projectItem.Properties.Item("AssemblyName").Value.ToString(),
+                            AssemblyOutputFullPath = Path.Combine(projRootPath, projOutputPath),
                             IsSelected = false
                         }
                     };

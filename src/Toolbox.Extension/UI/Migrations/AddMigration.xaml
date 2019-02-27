@@ -10,12 +10,47 @@
              Title="Add migration"
              VerticalAlignment="Center"
              HorizontalAlignment="Center"
-             MinHeight="200" MinWidth="500"
-             Height="300" Width="580">
-    <StackPanel Orientation="Vertical" Margin="16,8">
-        <controls:ComboBoxItem Title="Project"/>
-        <controls:ComboBoxItem Title="Database context"/>
-        <controls:TextInput Title="Migration namespace"/>
-        <controls:TextInput Title="Migration name"/>
-    </StackPanel>
+             MinHeight="280" MinWidth="500"
+             Height="380" Width="580">
+    <Window.Resources>
+        <Style x:Key="NavigationButton" TargetType="Button">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Width" Value="80"/>
+            <Setter Property="Height" Value="25"/>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Vertical" Margin="16,8">
+            <controls:ComboBoxItem Title="Project"
+                                   Items="{Binding ProjectNames}"
+                                   SelectedItem="{Binding SelectedProjectName, Mode=TwoWay}"/>
+            <controls:ComboBoxItem Title="Database context"
+                                   Items="{Binding DbContextClassNames}"
+                                   SelectedItem="{Binding SelectedDbContextName, Mode=TwoWay}"/>
+            <controls:TextInput Title="Migration namespace"
+                                Value="{Binding MigrationNamespace, Mode=TwoWay}"/>
+            <controls:TextInput Title="Migration name"
+                                Value="{Binding MigrationName, Mode=TwoWay}"/>
+        </StackPanel>
+        <Grid Grid.Row="1" Margin="0, 14">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1"
+                    Margin="4,0,4,0"
+                    Style="{StaticResource NavigationButton}"
+                    Command="{Binding OkCommand}">OK</Button>
+            <Button Grid.Column="2" 
+                    Margin="12,0,24,0"
+                    Style="{StaticResource NavigationButton}"
+                    Click="Cancel_Click">Cancel</Button>
+        </Grid>
+    </Grid>
 </platformUI:DialogWindow>

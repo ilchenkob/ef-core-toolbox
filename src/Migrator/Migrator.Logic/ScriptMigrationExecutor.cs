@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Design;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,15 +12,15 @@ using System.Reflection;
 
 namespace Migrator.Logic
 {
-    public class AddMigrationExecutor
+    public class ScriptMigrationExecutor
     {
-        public int Run(AddMigrationParams migrationParams)
+        public int Run(ScriptMigrationParams migrationParams)
         {
             if (!File.Exists(migrationParams.AssemblyFileName))
                 return ExitCode.CanNotFindFile;
 
             var assembly = Assembly.LoadFile(migrationParams.AssemblyFileName);
-            var contextType = assembly.GetExportedTypes().FirstOrDefault(t => t.FullName == migrationParams.DbContextTypeFullName);
+            Type contextType = null;// assembly.GetExportedTypes().FirstOrDefault(t => t.FullName == migrationParams.DbContextTypeFullName);
             var context = (DbContext)Activator.CreateInstance(contextType);
 
             var serviceCollection = new ServiceCollection();
@@ -32,14 +33,9 @@ namespace Migrator.Logic
             designTimeServices.ConfigureDesignTimeServices(serviceCollection);
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            var migrationScaffolder = serviceProvider.GetService<IMigrationsScaffolder>();
+            var sqlGenerator = serviceProvider.GetService<IMigrationsSqlGenerator>();
 
-            var migration = migrationScaffolder.ScaffoldMigration(
-                migrationName: migrationParams.MigrationName, 
-                rootNamespace: migrationParams.ContextNamespace,
-                subNamespace: migrationParams.SubNamespace,
-                language: Constants.ProgrammingLanguage);
-            var files = migrationScaffolder.Save(migrationParams.ProjectDir, migration, migrationParams.OutputDir);
+            // sqlGenerator.Generate();
 
             return ExitCode.Success;
         }

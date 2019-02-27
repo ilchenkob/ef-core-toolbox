@@ -64,8 +64,6 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 
         public OutputParamsViewModel OutputParamsVM { get; private set; }
 
-        public Action CloseAction { get; set; }
-
         public ICommand BackCommand { get; private set; }
 
         public ICommand NextCommand { get; private set; }

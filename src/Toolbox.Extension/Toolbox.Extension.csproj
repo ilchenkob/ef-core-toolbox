@@ -57,14 +57,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Migrator\Migrator.Logic\CommandType.cs">
+    <Compile Include="..\Migrator\Migrator.Logic\Models\AddMigrationParams.cs">
+      <Link>Logic\Migrations\Models\AddMigrationParams.cs</Link>
+    </Compile>
+    <Compile Include="..\Migrator\Migrator.Logic\Models\CommandType.cs">
       <Link>Logic\Migrations\Models\CommandType.cs</Link>
     </Compile>
-    <Compile Include="..\Migrator\Migrator.Logic\Models\AddMigratorParams.cs">
-      <Link>Logic\Migrations\Models\AddMigratorParams.cs</Link>
+    <Compile Include="..\Migrator\Migrator.Logic\Models\ExitCode.cs">
+      <Link>Logic\Migrations\Models\ExitCode.cs</Link>
     </Compile>
-    <Compile Include="..\Migrator\Migrator.Logic\Models\MigratorParams.cs">
-      <Link>Logic\Migrations\Models\MigratorParams.cs</Link>
+    <Compile Include="..\Migrator\Migrator.Logic\Models\FindDbContextSubtypeParams.cs">
+      <Link>Logic\Migrations\Models\FindDbContextSubtypeParams.cs</Link>
+    </Compile>
+    <Compile Include="..\Migrator\Migrator.Logic\Models\FindMigrationSubtypeParams.cs">
+      <Link>Logic\Migrations\Models\FindMigrationSubtypeParams.cs</Link>
+    </Compile>
+    <Compile Include="..\Migrator\Migrator.Logic\Models\IMigratorParams.cs">
+      <Link>Logic\Migrations\Models\IMigratorParams.cs</Link>
+    </Compile>
+    <Compile Include="..\Migrator\Migrator.Logic\Models\ScriptMigrationParams.cs">
+      <Link>Logic\Migrations\Models\ScriptMigrationParams.cs</Link>
     </Compile>
     <Compile Include="Constants.cs" />
     <Compile Include="Logic\DatabaseServices\IDatabaseConnector.cs" />
@@ -128,6 +140,8 @@
     <Compile Include="UI\Scaffolding\WizardSteps.xaml.cs">
       <DependentUpon>WizardSteps.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Services\IMessageBoxService.cs" />
+    <Compile Include="UI\Services\IMessageBoxTrigger.cs" />
     <Compile Include="UI\Services\MessageBoxService.cs" />
   </ItemGroup>
   <ItemGroup>

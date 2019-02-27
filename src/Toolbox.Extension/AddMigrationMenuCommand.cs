@@ -1,9 +1,9 @@
 ﻿using EnvDTE;
 using Microsoft.VisualStudio.Shell;
-using Migrator.Logic.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Linq;
 using System.Windows;
 using Toolbox.Extension.Logic.Migrations;
 using Toolbox.Extension.Logic.Migrations.ViewModels;
@@ -106,15 +106,23 @@ namespace Toolbox.Extension
                 var solutionProcessor = new SolutionProcessor(_ide);
                 var projects = solutionProcessor.GetAllSolutionProjects();
 
-                var projectItems = new Dictionary<string, List<string>>();
-                var migrationService = new MigrationService();
+                var messageBoxService = new MessageBoxService();
+                var migrationService = new MigrationService(messageBoxService);
 
-                migrationService.Run(new AddMigratorParams());
-                // var view = new AddMigration(new AddMigrationViewModel(projectItems, migrationService));
+                var window = new AddMigration(new AddMigrationViewModel(projects, migrationService, messageBoxService));
+
+                messageBoxService.ShowInfoMessageFunc =
+                    msg => showMessageBox(window, msg, MessageBoxImage.Information);
+                messageBoxService.ShowErrorMessageFunc =
+                    msg => showMessageBox(window, msg, MessageBoxImage.Error);
+                messageBoxService.ShowWarningMessageFunc =
+                    msg => showMessageBox(window, msg, MessageBoxImage.Warning);
+
+                window.ShowModal();
             }
         }
 
-        private async Task showMessageBox(ScaffoldingWizard owner, string text, MessageBoxImage icon)
+        private async Task showMessageBox(AddMigration owner, string text, MessageBoxImage icon)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
             MessageBox.Show(owner, text, "Database Scaffolding", MessageBoxButton.OK, icon);

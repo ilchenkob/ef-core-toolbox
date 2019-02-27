@@ -6,11 +6,15 @@ namespace Toolbox.Extension.Logic
 {
     internal class ProcessRunner
     {
-        public Action<string> OutputDataCallback { get; set; }
-        public Action<string> ErrorDataCallback { get; set; }
+        private IMigratorParams _currentParams;
 
-        public int Execute(MigratorParams migratorParams)
+        public Action<IMigratorParams, string> OutputDataCallback { get; set; }
+        public Action<IMigratorParams, string> ErrorDataCallback { get; set; }
+
+        public int Execute(IMigratorParams migratorParams)
         {
+            _currentParams = migratorParams;
+
             using (var process = new Process())
             {
                 try
@@ -46,13 +50,13 @@ namespace Toolbox.Extension.Logic
         private void onOutputDataReceived(object sender, DataReceivedEventArgs args)
         {
             if (args?.Data != null)
-            OutputDataCallback?.Invoke(args.Data);
+                OutputDataCallback?.Invoke(_currentParams, args.Data);
         }
 
         private void onErrorDataReceived(object sender, DataReceivedEventArgs args)
         {
             if (args?.Data != null)
-                ErrorDataCallback?.Invoke(args.Data);
+                ErrorDataCallback?.Invoke(_currentParams, args.Data);
         }
     }
 }

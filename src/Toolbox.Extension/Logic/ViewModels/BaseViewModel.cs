@@ -22,6 +22,8 @@ namespace Toolbox.Extension.Logic.ViewModels
       NotifyPropertyChanged(memberExpression.Member.Name);
     }
 
+    public Action CloseAction { get; set; }
+
     public event PropertyChangedEventHandler PropertyChanged;
   }
 }

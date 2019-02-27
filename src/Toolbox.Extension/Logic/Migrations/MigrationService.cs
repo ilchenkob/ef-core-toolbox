@@ -1,29 +1,46 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore.Design.Internal;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Design;
-using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
-using Microsoft.Extensions.DependencyInjection;
-using Migrator.Logic.Models;
-using System;
+﻿using Migrator.Logic.Models;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
+using System.Threading.Tasks;
+using Toolbox.Extension.UI.Services;
 
 namespace Toolbox.Extension.Logic.Migrations
 {
     public interface IMigrationService
     {
-        int Run(AddMigratorParams addMigratorParams);
+        int Run(AddMigrationParams addMigratorParams);
+
+        Task<List<string>> GetDbContextNames(FindDbContextSubtypeParams commandParams);
     }
 
     internal class MigrationService : IMigrationService
     {
-        public int Run(AddMigratorParams addMigratorParams)
+        private readonly IMessageBoxService _messageBoxService;
+
+        public MigrationService(IMessageBoxService messageBoxService)
+        {
+            _messageBoxService = messageBoxService;
+        }
+
+        public int Run(AddMigrationParams addMigratorParams)
         {
             var processRunner = new ProcessRunner();
             return processRunner.Execute(addMigratorParams);
+        }
+
+        public async Task<List<string>> GetDbContextNames(FindDbContextSubtypeParams commandParams)
+        {
+            var output = string.Empty;
+            var result = new ProcessRunner
+            {
+                OutputDataCallback = (p, msg) => output = msg
+            }.Execute(commandParams);
+            if (result == ExitCode.Success)
+            {
+                return output.Split(';').ToList();
+            }
+
+            return new List<string>();
         }
 
         //public static string GenerateCreateScript(this DatabaseFacade database)
@@ -46,10 +63,5 @@ namespace Toolbox.Extension.Logic.Migrations
 
         //    return builder.ToString();
         //}
-    }
-
-    internal class DbCtx : DbContext
-    {
-
     }
 }

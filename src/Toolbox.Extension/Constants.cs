@@ -8,6 +8,8 @@ namespace Toolbox.Extension
 
         public const string DefaultDbContextClassName = "DbContext";
 
+        public const string DefaultMigrationSubNamespace = "Migrations";
+
         public static TimeSpan DefaultTaskTimeout => TimeSpan.FromSeconds(15);
 
         public const string MigratorAssembly = "Migrator.Core.dll";
