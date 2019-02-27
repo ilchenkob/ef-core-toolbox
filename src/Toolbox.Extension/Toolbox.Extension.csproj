@@ -96,6 +96,11 @@
     <Compile Include="Logic\Settings\Models\MsSqlDatabaseConnectionSettings.cs" />
     <Compile Include="Logic\Settings\Settings.cs" />
     <Compile Include="AddMigrationMenuCommand.cs" />
+    <Compile Include="Resources\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
     <Compile Include="ScaffoldingMenuCommand.cs" />
     <Compile Include="MenuCommandPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -116,8 +121,10 @@
     <Compile Include="UI\Migrations\AddMigration.xaml.cs">
       <DependentUpon>AddMigration.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\Migrations\Converters\ItemsCountToCOmboboxEnableConverter.cs" />
+    <Compile Include="UI\Migrations\Converters\SelectedContextToInputEnableConverter.cs" />
     <Compile Include="UI\Scaffolding\Converters\AuthTypeToRadioStateConverter.cs" />
-    <Compile Include="UI\Scaffolding\Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="UI\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="UI\Scaffolding\Converters\StepNumberToBackButtonEnabledConverter.cs" />
     <Compile Include="UI\Scaffolding\Converters\StepNumberToOkButtonVisibilityConverter.cs" />
     <Compile Include="UI\Scaffolding\Converters\StepNumberToWizardStepBrushConverter.cs" />
@@ -483,6 +490,10 @@
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.15.8.122\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
@@ -522,6 +533,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.10\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.SDK.EmbedInteropTypes.15.0.10\build\Microsoft.VisualStudio.SDK.EmbedInteropTypes.targets')" />

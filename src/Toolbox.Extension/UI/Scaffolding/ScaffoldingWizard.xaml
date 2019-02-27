@@ -6,8 +6,10 @@
               xmlns:platformUI="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
               xmlns:local="clr-namespace:Toolbox.Extension.UI.Scaffolding"
               xmlns:converters="clr-namespace:Toolbox.Extension.UI.Scaffolding.Converters"
+              xmlns:sharedConverters="clr-namespace:Toolbox.Extension.UI.Converters"
+              xmlns:resx="clr-namespace:Toolbox.Extension.Resources"
               WindowStartupLocation="CenterScreen"
-              Title="Database Scaffolding"
+              Title="{x:Static resx:Strings.DatabaseScaffoldingMenuItemTitle}"
               VerticalAlignment="Center"
               HorizontalAlignment="Center"
               mc:Ignorable="d"
@@ -18,7 +20,7 @@
         <converters:StepNumberToBackButtonEnabledConverter x:Key="StepNumberToBackButtonEnabledConverter"/>
         <converters:StepNumberToWizardStepContentConverter x:Key="StepNumberToWizardStepContentConverter"/>
         <converters:ValidationToNextButtonEnabledConverter x:Key="ValidationToNextButtonEnabledConverter"/>
-        <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <sharedConverters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
         <Style x:Key="NavigationButton" TargetType="Button">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -192,22 +194,26 @@
                     Margin="0,0,4,0"
                     Style="{StaticResource NavigationButton}"
                     IsEnabled="{Binding State, Converter={StaticResource StepNumberToBackButtonEnabledConverter}}"
-                    Command="{Binding BackCommand}">Back</Button>
+                    Command="{Binding BackCommand}"
+                    Content="{x:Static resx:Strings.BackButtonCaption}"/>
             <Button Grid.Column="2"
                     Margin="4,0,4,0"
                     Style="{StaticResource NavigationButton}"
                     IsEnabled="{Binding State, Converter={StaticResource ValidationToNextButtonEnabledConverter}}"
-                    Command="{Binding NextCommand}">Next</Button>
+                    Command="{Binding NextCommand}"
+                    Content="{x:Static resx:Strings.NextButtonCaption}"/>
             <Button Grid.Column="2"
                     Margin="4,0,4,0"
                     IsEnabled="{Binding State, Converter={StaticResource ValidationToNextButtonEnabledConverter}}"
                     Visibility="{Binding CurrentStepNumber, Converter={StaticResource StepNumberToOkButtonVisibilityConverter}}"
                     Style="{StaticResource NavigationButton}"
-                    Command="{Binding OkCommand}">OK</Button>
+                    Command="{Binding OkCommand}"
+                    Content="{x:Static resx:Strings.OkButtonCaption}"/>
             <Button
                   Style="{StaticResource NavigationButton}"
                   Margin="12,0,24,0"
-                  Grid.Column="3" Click="Cancel_Click">Cancel</Button>
+                  Grid.Column="3" Click="Cancel_Click"
+                  Content="{x:Static resx:Strings.CancelButtonCaption}"/>
         </Grid>
     </Grid>
 </platformUI:DialogWindow>

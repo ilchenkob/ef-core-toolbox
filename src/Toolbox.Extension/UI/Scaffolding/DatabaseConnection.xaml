@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Toolbox.Extension.UI.Controls"
              xmlns:converters="clr-namespace:Toolbox.Extension.UI.Scaffolding.Converters"
+             xmlns:resx="clr-namespace:Toolbox.Extension.Resources"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -12,22 +13,22 @@
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <ComboBox>
-            <ComboBoxItem Content="Microsoft SQL Server" IsSelected="True"/>
+            <ComboBoxItem Content="{x:Static resx:Strings.MsSqlServer}" IsSelected="True"/>
         </ComboBox>
-        <controls:TextInput Title="Server" Value="{Binding Server, Mode=TwoWay}"/>
-        <controls:TextInput Title="Database" Value="{Binding Database, Mode=TwoWay}"/>
-        <GroupBox Header="Authentication" Margin="0,12,0,8">
+        <controls:TextInput Title="{x:Static resx:Strings.Server}" Value="{Binding Server, Mode=TwoWay}"/>
+        <controls:TextInput Title="{x:Static resx:Strings.Database}" Value="{Binding Database, Mode=TwoWay}"/>
+        <GroupBox Header="{x:Static resx:Strings.Authentication}" Margin="0,12,0,8">
             <StackPanel Orientation="Vertical">
-                <RadioButton GroupName="AuthType" Content="Windows Authentication"
+                <RadioButton GroupName="AuthType" Content="{x:Static resx:Strings.WindowsAuth}"
                              Margin="8"
                              IsChecked="{Binding Path=IsSqlAuth, Converter={StaticResource AuthTypeToRadioStateConverter}, ConverterParameter=false}"/>
-                <RadioButton GroupName="AuthType" Content="SQL Server Authentication"
+                <RadioButton GroupName="AuthType" Content="{x:Static resx:Strings.SqlServerAuth}"
                              Margin="8"
                              IsChecked="{Binding Path=IsSqlAuth, Converter={StaticResource AuthTypeToRadioStateConverter}, ConverterParameter=true}"/>
-                <controls:TextInput Title="User name" Value="{Binding Username, Mode=TwoWay}"
+                <controls:TextInput Title="{x:Static resx:Strings.Username}" Value="{Binding Username, Mode=TwoWay}"
                     IsEnabled="{Binding IsSqlAuth}"
                     Margin="8,0"/>
-                <controls:TextInput Title="Password" Value="{Binding Password, Mode=TwoWay}"
+                <controls:TextInput Title="{x:Static resx:Strings.Password}" Value="{Binding Password, Mode=TwoWay}"
                     IsPassword="true"
                     IsEnabled="{Binding IsSqlAuth}"
                     Margin="8,0,8,8"/>
@@ -41,9 +42,9 @@
             </Grid.ColumnDefinitions>
             <CheckBox Grid.Column="0" VerticalAlignment="Center" 
                       IsChecked="{Binding RememberConnection, Mode=TwoWay}"
-                      Content="Remember connection"/>
+                      Content="{x:Static resx:Strings.RememberConnection}"/>
             <Button Grid.Column="2"
-                    Content="Test connection"
+                    Content="{x:Static resx:Strings.TestConnectionButtonCaption}"
                     IsEnabled="{Binding IsValid}"
                     Command="{Binding TestConnectionCommand}"
                     Height="25" Width="120"/>

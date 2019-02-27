@@ -7,6 +7,7 @@ using Toolbox.Extension.Logic.DatabaseServices;
 using Toolbox.Extension.Logic.Settings;
 using Toolbox.Extension.Logic.Settings.Models;
 using Toolbox.Extension.Logic.ViewModels;
+using Toolbox.Extension.Resources;
 using Toolbox.Extension.UI.Services;
 using Task = System.Threading.Tasks.Task;
 
@@ -16,7 +17,6 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
     {
         private readonly IMessageBoxService _messageBoxService;
         private readonly IDatabaseConnector _dbConnector;
-        // private readonly DatabaseTypes _databaseType = DatabaseTypes.MsSqlServer;
 
         private bool _isDisposing;
         private CancellationTokenSource _cancellationTokenSource;
@@ -187,7 +187,7 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
             }
         }
 
-        public Task RaiseCantConnect() => _messageBoxService.ShowErrorMessage("Can not connect to database");
+        public Task RaiseCantConnect() => _messageBoxService.ShowErrorMessage(Strings.MessageCantConnectToDatabase);
 
         public void Dispose()
         {
@@ -222,7 +222,7 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
             }
 
             if (canConnect)
-                await _messageBoxService.ShowInfoMessage("Succesfully connected");
+                await _messageBoxService.ShowInfoMessage(Strings.MessageSuccessfullyConnectedToDataabse);
             else if (!_isDisposing)
                 await RaiseCantConnect();
 

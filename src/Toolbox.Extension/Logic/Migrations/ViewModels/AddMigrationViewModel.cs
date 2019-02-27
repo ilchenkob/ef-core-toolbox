@@ -3,7 +3,6 @@ using Migrator.Logic.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Toolbox.Extension.Logic.Models;
 using Toolbox.Extension.Logic.ViewModels;
@@ -154,7 +153,7 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
                     SubNamespace = getSubNamespace(selectedContext.Namespace, MigrationNamespace),
                     OutputDir = System.IO.Path.Combine(selectedProject.Path, "Migrations") // TODO: add value
                 };
-                var commandResult = await Task.Run(() => _migrationService.Run(commandParams));
+                var commandResult = await Task.Run(() => _migrationService.AddMigration(commandParams));
                 if (commandResult == ExitCode.Success)
                 {
                     CloseAction?.Invoke();
@@ -174,7 +173,7 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
                     if (selectedProject == null)
                         return;
 
-                    var classNames = await _migrationService.GetDbContextNames(new FindDbContextSubtypeParams
+                    var classNames = _migrationService.GetDbContextNames(new FindDbContextSubtypeParams
                     {
                         AssemblyFileName = selectedProject.AssemblyNameWithPath
                     });
@@ -187,7 +186,7 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
                             Namespace = n.Substring(0, lastDotIndex),
                             ClassName = n.Substring(lastDotIndex + 1)
                         };
-                    }).ToList();
+                    }).OrderBy(d => d.ClassName).ToList();
 
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     refreshDbContextNamesCollection(projectName);

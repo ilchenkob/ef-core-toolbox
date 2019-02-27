@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Toolbox.Extension.Logic.Scaffolding.ViewModels.TreeNodes;
 using Toolbox.Extension.Logic.ViewModels;
+using Toolbox.Extension.Resources;
 using Toolbox.Extension.UI.Services;
 using Task = System.Threading.Tasks.Task;
 
@@ -37,7 +38,7 @@ namespace Toolbox.Extension.Logic.Scaffolding.ViewModels
 
             if (schemas.Keys.Count == 0)
             {
-                await _messageBoxService.ShowWarningMessage("There is not tables in database");
+                await _messageBoxService.ShowWarningMessage(Strings.MessageNotTablesInDatabase);
                 return false;
             }
 

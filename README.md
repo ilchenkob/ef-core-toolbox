@@ -12,5 +12,5 @@ EF Core Toolbox is an extension for Visual Studio 2017. It provides a set of too
 
 #### Current status
 
-This is a preview version of EF Core Tools. It supports only MS SQL Server database and contains only one tool - Database scaffolding wizard. This tool provides GUI for [Scaffold-DbContext](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell#scaffold-dbcontext) command.
+This is a preview version of EF Core Toolbox. It supports only MS SQL Server database and contains only one tool - Database scaffolding wizard. This tool provides GUI for [Scaffold-DbContext](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/powershell#scaffold-dbcontext) command.
 Since you do not have to have a deal with EF Core tools commands directly, you don't need to add `Microsoft.EntityFrameworkCore.Tools` package to your .Net Core project.

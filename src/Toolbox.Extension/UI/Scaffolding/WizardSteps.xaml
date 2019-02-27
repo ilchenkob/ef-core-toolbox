@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:Toolbox.Extension.UI.Scaffolding.Converters"
+             xmlns:resx="clr-namespace:Toolbox.Extension.Resources"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              x:Name="WizardStepsControl">
@@ -21,13 +22,13 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Label Grid.Row="1" Content="Database connection"
+        <Label Grid.Row="1" Content="{x:Static resx:Strings.StepDatabaseConnection}"
                Style="{StaticResource WizardStepTitle}"
                Foreground="{Binding Path=CurrentStep, ElementName=WizardStepsControl, Converter={StaticResource StepNumberToWizardStepBrushConverter}, ConverterParameter=0}"/>
-        <Label Grid.Row="2" Content="Tables"
+        <Label Grid.Row="2" Content="{x:Static resx:Strings.StepTables}"
                Style="{StaticResource WizardStepTitle}"
                Foreground="{Binding Path=CurrentStep, ElementName=WizardStepsControl, Converter={StaticResource StepNumberToWizardStepBrushConverter}, ConverterParameter=1}"/>
-        <Label Grid.Row="3" Content="Output parameters"
+        <Label Grid.Row="3" Content="{x:Static resx:Strings.StepOutputParams}"
                Style="{StaticResource WizardStepTitle}"
                Foreground="{Binding Path=CurrentStep, ElementName=WizardStepsControl, Converter={StaticResource StepNumberToWizardStepBrushConverter}, ConverterParameter=2}"/>
     </Grid>

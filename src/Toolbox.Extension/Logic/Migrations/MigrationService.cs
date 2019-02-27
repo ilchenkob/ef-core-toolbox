@@ -8,9 +8,9 @@ namespace Toolbox.Extension.Logic.Migrations
 {
     public interface IMigrationService
     {
-        int Run(AddMigrationParams addMigratorParams);
+        int AddMigration(AddMigrationParams addMigratorParams);
 
-        Task<List<string>> GetDbContextNames(FindDbContextSubtypeParams commandParams);
+        List<string> GetDbContextNames(FindDbContextSubtypeParams commandParams);
     }
 
     internal class MigrationService : IMigrationService
@@ -22,13 +22,13 @@ namespace Toolbox.Extension.Logic.Migrations
             _messageBoxService = messageBoxService;
         }
 
-        public int Run(AddMigrationParams addMigratorParams)
+        public int AddMigration(AddMigrationParams addMigratorParams)
         {
             var processRunner = new ProcessRunner();
             return processRunner.Execute(addMigratorParams);
         }
 
-        public async Task<List<string>> GetDbContextNames(FindDbContextSubtypeParams commandParams)
+        public List<string> GetDbContextNames(FindDbContextSubtypeParams commandParams)
         {
             var output = string.Empty;
             var result = new ProcessRunner

@@ -6,7 +6,7 @@ namespace Toolbox.Extension
     {
         public const string ProgrammingLanguage = "C#";
 
-        public const string DefaultDbContextClassName = "DbContext";
+        public const string DefaultDbContextClassName = "DatabaseContext";
 
         public const string DefaultMigrationSubNamespace = "Migrations";
 

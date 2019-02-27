@@ -1,20 +1,18 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 
-namespace Toolbox.Extension.UI.Scaffolding.Converters
+namespace Toolbox.Extension.UI.Migrations.Converters
 {
-    public class BoolToVisibilityConverter : IValueConverter
+    public class ItemsCountToCOmboboxEnableConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (bool.TryParse(value?.ToString(), out bool boolValue))
-            {
-                return boolValue ? Visibility.Visible : Visibility.Hidden;
-            }
+            if (value is ObservableCollection<string> collection)
+                return collection.Count > 0;
 
-            return Visibility.Hidden;
+            return false;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

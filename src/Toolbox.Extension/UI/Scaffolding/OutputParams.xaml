@@ -4,27 +4,28 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:controls="clr-namespace:Toolbox.Extension.UI.Controls"
+             xmlns:resx="clr-namespace:Toolbox.Extension.Resources"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel Orientation="Vertical">
-        <controls:ComboBoxItem Title="Project" Items="{Binding ProjectNames}" SelectedItem="{Binding SelectedProjectName, Mode=TwoWay}"/>
-        <controls:TextInput Title="Namespace for entity classes and database context" Value="{Binding Namespace, Mode=TwoWay}"/>
-        <controls:TextInput Title="Database context class name" Value="{Binding ContextName, Mode=TwoWay}"/>
+        <controls:ComboBoxItem Title="{x:Static resx:Strings.Project}" Items="{Binding ProjectNames}" SelectedItem="{Binding SelectedProjectName, Mode=TwoWay}"/>
+        <controls:TextInput Title="{x:Static resx:Strings.NamespaceForScaffolding}" Value="{Binding Namespace, Mode=TwoWay}"/>
+        <controls:TextInput Title="{x:Static resx:Strings.DatabaseContextClassName}" Value="{Binding ContextName, Mode=TwoWay}"/>
         <Grid Margin="0,12,0,4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
             <CheckBox Grid.Column="0"
-                      Content="Use database names"
+                      Content="{x:Static resx:Strings.UseDatabaseNames}"
                       IsChecked="{Binding UseDbNames, Mode=TwoWay}"/>
             <CheckBox Grid.Column="1"
-                      Content="Use data annotation attributes"
+                      Content="{x:Static resx:Strings.UseDataAnnotationAttributes}"
                       IsChecked="{Binding UseDataAnnotations, Mode=TwoWay}"/>
         </Grid>
-        <Label Margin="0,4,0,2"
-               Content="Output folder"/>
-        <Grid Grid.Column="1" Grid.Row="1">
+        <Label Margin="0,4,0,0"
+               Content="{x:Static resx:Strings.OutputFolder}"/>
+        <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="84"/>
@@ -32,13 +33,13 @@
             <TextBox VerticalAlignment="Center"
                   Grid.Column="0" 
                   Height="24"
-                  Margin="0,4"
+                  Margin="0,2"
                   Padding="4,0"
-                     VerticalContentAlignment="Center"
+                  VerticalContentAlignment="Center"
                   Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button Margin="4,4,0,4"
+            <Button Margin="4,2,0,2"
                     Grid.Column="1"
-                    Content="Browse..."
+                    Content="{x:Static resx:Strings.BrowseButtonCaption}"
                     Click="BrowseFolder_Click"/>
         </Grid>
     </StackPanel>

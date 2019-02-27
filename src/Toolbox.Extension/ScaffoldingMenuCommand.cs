@@ -9,6 +9,7 @@ using Toolbox.Extension.Logic.Scaffolding.ViewModels;
 using Toolbox.Extension.UI.Scaffolding;
 using Toolbox.Extension.UI.Services;
 using Task = System.Threading.Tasks.Task;
+using Toolbox.Extension.Resources;
 
 namespace Toolbox.Extension
 {
@@ -127,7 +128,7 @@ namespace Toolbox.Extension
         private async Task showMessageBox(ScaffoldingWizard owner, string text, MessageBoxImage icon)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            MessageBox.Show(owner, text, "Database Context Scaffolding", MessageBoxButton.OK, icon);
+            MessageBox.Show(owner, text, Strings.DatabaseScaffoldingMenuItemTitle, MessageBoxButton.OK, icon);
         }
 
         private bool isScaffoldingCommandEnabled()

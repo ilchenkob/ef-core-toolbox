@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using Toolbox.Extension.Logic.Migrations;
 using Toolbox.Extension.Logic.Migrations.ViewModels;
+using Toolbox.Extension.Resources;
 using Toolbox.Extension.UI.Migrations;
 using Toolbox.Extension.UI.Scaffolding;
 using Toolbox.Extension.UI.Services;
@@ -125,7 +126,7 @@ namespace Toolbox.Extension
         private async Task showMessageBox(AddMigration owner, string text, MessageBoxImage icon)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            MessageBox.Show(owner, text, "Database Scaffolding", MessageBoxButton.OK, icon);
+            MessageBox.Show(owner, text, Strings.AddMigrationMenuItemTitle, MessageBoxButton.OK, icon);
         }
 
         private bool isMigrationCommandEnabled()
