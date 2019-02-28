@@ -23,24 +23,6 @@
                       Content="{x:Static resx:Strings.UseDataAnnotationAttributes}"
                       IsChecked="{Binding UseDataAnnotations, Mode=TwoWay}"/>
         </Grid>
-        <Label Margin="0,4,0,0"
-               Content="{x:Static resx:Strings.OutputFolder}"/>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="84"/>
-            </Grid.ColumnDefinitions>
-            <TextBox VerticalAlignment="Center"
-                  Grid.Column="0" 
-                  Height="24"
-                  Margin="0,2"
-                  Padding="4,0"
-                  VerticalContentAlignment="Center"
-                  Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            <Button Margin="4,2,0,2"
-                    Grid.Column="1"
-                    Content="{x:Static resx:Strings.BrowseButtonCaption}"
-                    Click="BrowseFolder_Click"/>
-        </Grid>
+        <controls:DirectoryInput Path="{Binding OutputPath, Mode=TwoWay}"/>
     </StackPanel>
 </UserControl>

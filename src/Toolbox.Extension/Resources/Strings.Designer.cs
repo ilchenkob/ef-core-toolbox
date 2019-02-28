@@ -106,6 +106,15 @@ namespace Toolbox.Extension.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt; Make sure the project builds fine and run this wizard again &gt;.
+        /// </summary>
+        public static string CantBuildProjectComboBoxItem {
+            get {
+                return ResourceManager.GetString("CantBuildProjectComboBoxItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Database.
         /// </summary>
         public static string Database {
@@ -138,6 +147,24 @@ namespace Toolbox.Extension.Resources {
         public static string DatabaseScaffoldingMenuItemTitle {
             get {
                 return ResourceManager.GetString("DatabaseScaffoldingMenuItemTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt; There is no public DbContext found. Add it, build the project and run this wizard again &gt;.
+        /// </summary>
+        public static string DbContextNotFoundComboBoxItem {
+            get {
+                return ResourceManager.GetString("DbContextNotFoundComboBoxItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can not build the following project: {0}.
+        /// </summary>
+        public static string MessageCantBuildProject {
+            get {
+                return ResourceManager.GetString("MessageCantBuildProject", resourceCulture);
             }
         }
         

@@ -12,10 +12,10 @@
              Title="{x:Static resx:Strings.AddMigrationMenuItemTitle}"
              VerticalAlignment="Center"
              HorizontalAlignment="Center"
-             MinHeight="390" MinWidth="500"
+             MinHeight="410" MinWidth="500"
              Height="420" Width="570">
     <Window.Resources>
-        <converters:SelectedContextToInputEnableConverter x:Key="SelectedContextToInputEnableConverter"/>
+        <converters:SelectedContextToInputEnableConverter x:Key="SelectedContextToInputEnableConverter"/>        
         <Style x:Key="NavigationButton" TargetType="Button">
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -41,28 +41,12 @@
             <controls:TextInput Title="{x:Static resx:Strings.MigrationName}"
                                 Value="{Binding MigrationName, Mode=TwoWay}"
                                 IsEnabled="{Binding SelectedDbContextName, Converter={StaticResource SelectedContextToInputEnableConverter}}"/>
-            <Label Margin="0,4,0,0"
-               Content="{x:Static resx:Strings.OutputFolder}"/>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="84"/>
-                </Grid.ColumnDefinitions>
-                <TextBox VerticalAlignment="Center"
-                      Grid.Column="0" 
-                      Height="24"
-                      Margin="0,2"
-                      Padding="4,0"
-                      VerticalContentAlignment="Center"
-                      IsEnabled="{Binding SelectedDbContextName, Converter={StaticResource SelectedContextToInputEnableConverter}}"
-                      Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                <Button Margin="4,2,0,2"
-                    Grid.Column="1"
-                    Content="{x:Static resx:Strings.BrowseButtonCaption}"
-                    IsEnabled="{Binding SelectedDbContextName, Converter={StaticResource SelectedContextToInputEnableConverter}}"
-                    Click="BrowseFolder_Click"/>
-            </Grid>
+            <controls:DirectoryInput
+                Path="{Binding OutputPath, Mode=TwoWay}"
+                IsEnabled="{Binding SelectedDbContextName, Converter={StaticResource SelectedContextToInputEnableConverter}}"/>
         </StackPanel>
+        <controls:BusyIndicator IsLoading="{Binding IsLoading}"
+                                IsEnabled="{Binding SelectedDbContextName, Converter={StaticResource SelectedContextToInputEnableConverter}}"/>
         <Grid Grid.Row="1" Margin="0, 14">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

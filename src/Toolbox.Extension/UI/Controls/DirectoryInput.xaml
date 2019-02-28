@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Toolbox.Extension.UI.Controls.DirectoryInput"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Toolbox.Extension.UI.Controls"
+             xmlns:resx="clr-namespace:Toolbox.Extension.Resources"
+             mc:Ignorable="d"
+             x:Name="Root"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel Orientation="Vertical">
+        <Label Margin="0,4,0,0" Content="{x:Static resx:Strings.OutputFolder}"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="84"/>
+            </Grid.ColumnDefinitions>
+            <TextBox VerticalAlignment="Center"
+                  Grid.Column="0" 
+                  Height="24"
+                  Margin="0,2"
+                  Padding="4,0"
+                  IsEnabled="{Binding IsEnabled, ElementName=Root}"
+                  VerticalContentAlignment="Center"
+                  Text="{Binding Path, ElementName=Root, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+            <Button Margin="4,2,0,2"
+                    Grid.Column="1"
+                    IsEnabled="{Binding IsEnabled, ElementName=Root}"
+                    Content="{x:Static resx:Strings.BrowseButtonCaption}"
+                    Click="BrowseFolder_Click"/>
+        </Grid>
+    </StackPanel>
+</UserControl>

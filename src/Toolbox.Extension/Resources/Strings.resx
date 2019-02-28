@@ -132,6 +132,9 @@
   <data name="CancelButtonCaption" xml:space="preserve">
     <value>Cancel</value>
   </data>
+  <data name="CantBuildProjectComboBoxItem" xml:space="preserve">
+    <value>&lt; Make sure the project builds fine and run this wizard again &gt;</value>
+  </data>
   <data name="Database" xml:space="preserve">
     <value>Database</value>
   </data>
@@ -143,6 +146,12 @@
   </data>
   <data name="DatabaseScaffoldingMenuItemTitle" xml:space="preserve">
     <value>Database context and models scaffolding</value>
+  </data>
+  <data name="DbContextNotFoundComboBoxItem" xml:space="preserve">
+    <value>&lt; There is no public DbContext found. Add it, build the project and run this wizard again &gt;</value>
+  </data>
+  <data name="MessageCantBuildProject" xml:space="preserve">
+    <value>Can not build the following project: {0}</value>
   </data>
   <data name="MessageCantConnectToDatabase" xml:space="preserve">
     <value>Can not connect to database</value>

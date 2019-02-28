@@ -2,6 +2,7 @@
 using Migrator.Logic.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using Toolbox.Extension.Logic.Models;
@@ -16,15 +17,18 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
         private readonly IReadOnlyCollection<Project> _allSolutionProjects;
         private readonly Dictionary<string, List<DbContextInfo>> _projectDbContexts;
 
+        private readonly IProjectBuilder _projectBuilder;
         private readonly IMigrationService _migrationService;
         private readonly IMessageBoxService _messageBoxService;
 
         public AddMigrationViewModel(
             IReadOnlyCollection<Project> allSolutionProjects,
+            IProjectBuilder projectBuilder,
             IMigrationService migrationService,
             IMessageBoxService messageBoxService)
         {
             _allSolutionProjects = allSolutionProjects;
+            _projectBuilder = projectBuilder;
             _migrationService = migrationService;
             _messageBoxService = messageBoxService;
 
@@ -53,6 +57,11 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
                 if (!string.IsNullOrWhiteSpace(value) && _selectedProjectName != value)
                 {
                     _selectedProjectName = value;
+
+                    OutputPath = Path.Combine(
+                        _allSolutionProjects.FirstOrDefault(p => p.DisplayName == _selectedProjectName)?.Path,
+                        Constants.DefaultMigrationSubDirectory);
+
                     loadDbContextNames(value);
                     NotifyPropertyChanged(() => SelectedProjectName);
                     NotifyPropertyChanged(() => IsValid);
@@ -72,10 +81,13 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
                 {
                     _selectedDbContextName = value;
 
-                    var contextNamespace = _projectDbContexts[SelectedProjectName].FirstOrDefault(n => n.ClassName == value).Namespace ?? string.Empty;
-                    MigrationNamespace = contextNamespace.Length > 0
-                        ? $"{contextNamespace}.{Constants.DefaultMigrationSubNamespace}"
-                        : Constants.DefaultMigrationSubNamespace;
+                    if (_selectedDbContextName != null && !_selectedDbContextName.StartsWith("<"))
+                    {
+                        var contextNamespace = _projectDbContexts[SelectedProjectName].FirstOrDefault(n => n.ClassName == value).Namespace ?? string.Empty;
+                        MigrationNamespace = contextNamespace.Length > 0
+                            ? $"{contextNamespace}.{Constants.DefaultMigrationSubNamespace}"
+                            : Constants.DefaultMigrationSubNamespace;
+                    }
 
                     NotifyPropertyChanged(() => SelectedDbContextName);
                     NotifyPropertyChanged(() => IsValid);
@@ -113,6 +125,18 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
             }
         }
 
+        private string _outputPath;
+        public string OutputPath
+        {
+            get => _outputPath;
+            set
+            {
+                _outputPath = value;
+                NotifyPropertyChanged(() => OutputPath);
+                NotifyPropertyChanged(() => IsValid);
+            }
+        }
+
         private bool _isLoading;
         public bool IsLoading
         {
@@ -133,7 +157,8 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
                 !string.IsNullOrWhiteSpace(SelectedProjectName) &&
                 !string.IsNullOrWhiteSpace(SelectedDbContextName) &&
                 !string.IsNullOrWhiteSpace(MigrationNamespace) &&
-                !string.IsNullOrWhiteSpace(MigrationName);
+                !string.IsNullOrWhiteSpace(MigrationName) &&
+                !string.IsNullOrWhiteSpace(OutputPath);
         }
 
         private async Task okCommandExecute()
@@ -141,23 +166,44 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
             var selectedProject = _allSolutionProjects.FirstOrDefault(p => p.DisplayName == SelectedProjectName);
             if (selectedProject != null)
             {
-                var selectedContext = _projectDbContexts[selectedProject.DisplayName]
-                                        .FirstOrDefault(c => c.ClassName == SelectedDbContextName);
-                var commandParams = new AddMigrationParams
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                IsLoading = true;
+                if (_projectBuilder.Build(selectedProject.UniqueName))
                 {
-                    AssemblyFileName = selectedProject.AssemblyNameWithPath,
-                    MigrationName = MigrationName,
-                    ProjectDir = selectedProject.Path,
-                    DbContextTypeFullName = selectedContext.FullName,
-                    ContextNamespace = selectedContext.Namespace,
-                    SubNamespace = getSubNamespace(selectedContext.Namespace, MigrationNamespace),
-                    OutputDir = System.IO.Path.Combine(selectedProject.Path, "Migrations") // TODO: add value
-                };
-                var commandResult = await Task.Run(() => _migrationService.AddMigration(commandParams));
-                if (commandResult == ExitCode.Success)
-                {
-                    CloseAction?.Invoke();
+                    await Task.Run(async () =>
+                    {
+                        var selectedContext = _projectDbContexts[selectedProject.DisplayName]
+                                                .FirstOrDefault(c => c.ClassName == SelectedDbContextName);
+                        var commandParams = new AddMigrationParams
+                        {
+                            AssemblyFileName = selectedProject.AssemblyNameWithPath,
+                            MigrationName = MigrationName,
+                            ProjectDir = selectedProject.Path,
+                            DbContextTypeFullName = selectedContext.FullName,
+                            ContextNamespace = selectedContext.Namespace,
+                            SubNamespace = getSubNamespace(selectedContext.Namespace, MigrationNamespace),
+                            OutputDir = OutputPath
+                        };
+                        var commandResult = _migrationService.AddMigration(commandParams);
+                        if (commandResult == ExitCode.Success)
+                        {
+                            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                            CloseAction?.Invoke();
+                        }
+                        else
+                        {
+                            // TODO: show message
+                        }
+                    });
                 }
+                else
+                {
+                    await _messageBoxService.ShowErrorMessage(
+                        string.Format(Resources.Strings.MessageCantBuildProject, selectedProject.DisplayName));
+                }
+
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                IsLoading = false;
             }
         }
 
@@ -179,6 +225,9 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
                     });
                     _projectDbContexts[projectName] = classNames.Select(n =>
                     {
+                        if (n.StartsWith("<"))
+                            return new DbContextInfo { ClassName = n };
+                    
                         var lastDotIndex = n.LastIndexOf('.');
                         return new DbContextInfo
                         {

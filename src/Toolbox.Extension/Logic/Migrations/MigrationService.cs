@@ -1,7 +1,6 @@
 ﻿using Migrator.Logic.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Toolbox.Extension.UI.Services;
 
 namespace Toolbox.Extension.Logic.Migrations
@@ -37,7 +36,23 @@ namespace Toolbox.Extension.Logic.Migrations
             }.Execute(commandParams);
             if (result == ExitCode.Success)
             {
-                return output.Split(';').ToList();
+                return string.IsNullOrWhiteSpace(output)
+                    ? new List<string> { Resources.Strings.DbContextNotFoundComboBoxItem }
+                    : output.Split(';').ToList();
+            }
+            else if (result == ExitCode.CanNotFindDbContext)
+            {
+                return new List<string> { Resources.Strings.DbContextNotFoundComboBoxItem };
+            }
+            else if (result == ExitCode.CanNotFindFile)
+            {
+                return new List<string> { Resources.Strings.CantBuildProjectComboBoxItem };
+            }
+            else if (!string.IsNullOrWhiteSpace(output))
+            {
+#pragma warning disable VSTHRD110 // Observe result of async calls
+                _messageBoxService.ShowErrorMessage(output);
+#pragma warning restore VSTHRD110 // Observe result of async calls
             }
 
             return new List<string>();

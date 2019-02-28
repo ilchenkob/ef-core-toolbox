@@ -79,6 +79,7 @@
       <Link>Logic\Migrations\Models\ScriptMigrationParams.cs</Link>
     </Compile>
     <Compile Include="Constants.cs" />
+    <Compile Include="IProjectBuilder.cs" />
     <Compile Include="Logic\DatabaseServices\IDatabaseConnector.cs" />
     <Compile Include="Logic\Migrations\MigrationService.cs" />
     <Compile Include="Logic\Migrations\ViewModels\AddMigrationViewModel.cs" />
@@ -115,8 +116,14 @@
     <Compile Include="Logic\Scaffolding\ViewModels\TreeNodes\NodeViewModel.cs" />
     <Compile Include="Logic\Scaffolding\ViewModels\TreeNodes\SchemaNodeViewModel.cs" />
     <Compile Include="Logic\Scaffolding\ViewModels\WizardState.cs" />
+    <Compile Include="UI\Controls\BusyIndicator.xaml.cs">
+      <DependentUpon>BusyIndicator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Controls\ComboBoxItem.xaml.cs">
       <DependentUpon>ComboBoxItem.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Controls\DirectoryInput.xaml.cs">
+      <DependentUpon>DirectoryInput.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Migrations\AddMigration.xaml.cs">
       <DependentUpon>AddMigration.xaml</DependentUpon>
@@ -500,7 +507,15 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="UI\Controls\BusyIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\Controls\ComboBoxItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Controls\DirectoryInput.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

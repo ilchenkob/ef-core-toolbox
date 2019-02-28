@@ -11,5 +11,7 @@
         public const int InvalidArguments = 3;
 
         public const int InvalidCommand = 4;
+
+        public const int CanNotFindDbContext = 5;
     }
 }

@@ -110,7 +110,8 @@ namespace Toolbox.Extension
                 var messageBoxService = new MessageBoxService();
                 var migrationService = new MigrationService(messageBoxService);
 
-                var window = new AddMigration(new AddMigrationViewModel(projects, migrationService, messageBoxService));
+                var viewModel = new AddMigrationViewModel(projects, solutionProcessor, migrationService, messageBoxService);
+                var window = new AddMigration(viewModel);
 
                 messageBoxService.ShowInfoMessageFunc =
                     msg => showMessageBox(window, msg, MessageBoxImage.Information);

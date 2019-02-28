@@ -2,6 +2,7 @@
 using Migrator.Logic.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Migrator.Core
 {
@@ -36,6 +37,15 @@ namespace Migrator.Core
                     var types = TypeFinder.GetMigrationTypeFullNamesFromAssebly(commandParams.AssemblyFileName);
                     return writeResult(types);
                 }
+            }
+            catch (InvalidOperationException)
+            {
+                return ExitCode.CanNotFindDbContext;
+            }
+            catch (FileNotFoundException exception)
+            {
+                Console.WriteLine(exception.Message);
+                return ExitCode.CanNotFindFile;
             }
             catch (ArgumentException exception)
             {
