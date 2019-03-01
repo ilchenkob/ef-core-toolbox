@@ -13,7 +13,7 @@ using Toolbox.Extension.UI.Scaffolding;
 using Toolbox.Extension.UI.Services;
 using Task = System.Threading.Tasks.Task;
 
-namespace Toolbox.Extension
+namespace Toolbox.Extension.Commands
 {
     internal sealed class AddMigrationMenuCommand : IDisposable
     {

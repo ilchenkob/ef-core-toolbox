@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using Toolbox.Extension.Logic.ViewModels;
 
-namespace Toolbox.Extension.Logic.Scaffolding.ViewModels.TreeNodes
+namespace Toolbox.Extension.Logic.ViewModels.TreeNodes
 {
   public class NodeViewModel : BaseViewModel
   {

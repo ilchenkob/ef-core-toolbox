@@ -73,10 +73,17 @@
         </Strings>
       </Button>
 
-      <Button guid="guidMenuCommandPackageCmdSet" id="MigrationCommandId" priority="0x0200" type="Button">
+      <Button guid="guidMenuCommandPackageCmdSet" id="AddMigrationCommandId" priority="0x0200" type="Button">
         <Parent guid="guidMenuCommandPackageCmdSet" id="SubMenuGroup" />
         <Strings>
           <ButtonText>Add migrations...</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidMenuCommandPackageCmdSet" id="ScriptMigrationCommandId" priority="0x0300" type="Button">
+        <Parent guid="guidMenuCommandPackageCmdSet" id="SubMenuGroup" />
+        <Strings>
+          <ButtonText>Script migrations...</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -99,8 +106,10 @@
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidMenuCommandPackageCmdSet" value="{208610e3-fcba-47f3-b084-da779d2fb5e2}">
       <IDSymbol name="EfCoreToolboxMenuGroup" value="0x1020" />
+
       <IDSymbol name="ScaffoldingCommandId" value="0x0100" />
-      <IDSymbol name="MigrationCommandId" value="0x0200" />
+      <IDSymbol name="AddMigrationCommandId" value="0x0200" />
+      <IDSymbol name="ScriptMigrationCommandId" value="0x0300" />
 
       <IDSymbol name="TopLevelMenu" value="0x1021"/>
       <IDSymbol name="SubMenuGroup" value="0x1150"/>

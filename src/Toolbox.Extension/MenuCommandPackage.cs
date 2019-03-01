@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Newtonsoft.Json;
+using Toolbox.Extension.Commands;
 using Toolbox.Extension.Logic.Settings;
 using Toolbox.Extension.Logic.Settings.Models;
 using Task = System.Threading.Tasks.Task;
@@ -160,6 +161,8 @@ namespace Toolbox.Extension
         {
             await ScaffoldingMenuCommand.InitializeAsync(this);
             await AddMigrationMenuCommand.InitializeAsync(this);
+            await ScriptMigrationMenuCommand.InitializeAsync(this);
+
             await base.InitializeAsync(cancellationToken, progress);
         }
 
@@ -169,6 +172,8 @@ namespace Toolbox.Extension
         {
             ScaffoldingMenuCommand.Instance?.Dispose();
             AddMigrationMenuCommand.Instance?.Dispose();
+            ScriptMigrationMenuCommand.Instance?.Dispose();
+
             base.Dispose(disposing);
         }
     }

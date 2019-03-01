@@ -1,20 +1,20 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Toolbox.Extension.Logic.ViewModels.TreeNodes;
 
-namespace Toolbox.Extension.Logic.Scaffolding.ViewModels.TreeNodes
+namespace Toolbox.Extension.Logic.Migrations.ViewModels.TreeNodes
 {
-    public class SchemaNodeViewModel : NodeViewModel
+    public class DbContextNodeViewModel : NodeViewModel
     {
         private bool _detectChanges = true;
 
-        public SchemaNodeViewModel(string title, IEnumerable<string> tables, Action<bool> stateChangedCallback)
+        public DbContextNodeViewModel(string title, IEnumerable<string> migrations, Action<bool> stateChangedCallback)
         {
             Title = title;
             Childs = new ObservableCollection<NodeViewModel>(
-                tables.Select(t => new NodeViewModel(t, s => checkState())));
+                migrations.Select(t => new NodeViewModel(t, s => checkState())));
             StateChanged = stateChangedCallback;
         }
 

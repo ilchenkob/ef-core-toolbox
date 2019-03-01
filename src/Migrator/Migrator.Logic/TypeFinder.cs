@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,30 @@ namespace Migrator.Logic
     {
         public static List<string> GetDbContextTypeFullNamesFromAssebly(string assembly)
         {
-            return getTypeFullNamesFromAssebly(assembly, typeof(DbContext));
+            return getPublicTypesFromAssebly(assembly, typeof(DbContext))
+                .Select(t => t.FullName)
+                .ToList();
         }
 
-        public static List<string> GetMigrationTypeFullNamesFromAssebly(string assembly)
+        public static Dictionary<string, List<string>> GetMigrationByDbContextFromAssebly(string assembly)
         {
-            return getTypeFullNamesFromAssebly(assembly, typeof(Migration));
+            return getPublicTypesFromAssebly(assembly, typeof(Migration))
+                .Select(m =>
+                {
+                    var contextAttribute = m.GetCustomAttribute<DbContextAttribute>();
+                    var migrationAttribute = m.GetCustomAttribute<MigrationAttribute>();
+                    return
+                    (
+                        migrationName: migrationAttribute == null ? m.Name : migrationAttribute.Id,
+                        contextFullName: contextAttribute == null ? string.Empty : contextAttribute.ContextType.FullName
+                    );
+                })
+                .Where(i => !string.IsNullOrEmpty(i.contextFullName))
+                .GroupBy(i => i.contextFullName)
+                .ToDictionary(g => g.Key, g => g.Select(m => m.migrationName).ToList());
         }
 
-        private static List<string> getTypeFullNamesFromAssebly(string assembly, Type inheritedFromType)
+        private static IEnumerable<Type> getPublicTypesFromAssebly(string assembly, Type inheritedFromType)
         {
             if (!File.Exists(assembly))
                 throw new FileNotFoundException($"File is not found: {assembly}");
@@ -33,9 +49,7 @@ namespace Migrator.Logic
             if (exportedTypes == null || exportedTypes.Length == 0)
                 throw new InvalidOperationException($"Assembly does not have any public types: {assembly}");
 
-            return exportedTypes.Where(t => t?.BaseType != null && t.BaseType == inheritedFromType)
-                                .Select(t => t.FullName)
-                                .ToList();
+            return exportedTypes.Where(t => t?.BaseType != null && t.BaseType == inheritedFromType);
         }
     }
 }

@@ -1,14 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
+﻿using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.EntityFrameworkCore.Migrations.Design;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Migrator.Logic.Models;
-using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace Migrator.Logic
 {
@@ -16,15 +12,17 @@ namespace Migrator.Logic
     {
         public int Run(ScriptMigrationParams migrationParams)
         {
+            //migrationParams.AssemblyFileName = @"C:\Users\Vitalii_Ilchenko\source\repos\ConsoleApp9\ConsoleAppcore\bin\Debug\netcoreapp2.1\ConsoleAppcore.dll";
+            //migrationParams.OutputPath = @"C:\Users\Vitalii_Ilchenko\source\repos\ConsoleApp9\ConsoleAppcore\Migrations\Scripts";
+            //migrationParams.Migrations = new string[] { "20190227211052_SomeTest" };
+            //migrationParams.DbContextFullName = "ConsoleAppcore.Test1.DbContextTest1";
+
             if (!File.Exists(migrationParams.AssemblyFileName))
                 return ExitCode.CanNotFindFile;
 
-            var assembly = Assembly.LoadFile(migrationParams.AssemblyFileName);
-            Type contextType = null;// assembly.GetExportedTypes().FirstOrDefault(t => t.FullName == migrationParams.DbContextTypeFullName);
-            var context = (DbContext)Activator.CreateInstance(contextType);
+            var context = DbContextFactory.CreateContextInstance(migrationParams.AssemblyFileName, migrationParams.DbContextFullName);
 
             var serviceCollection = new ServiceCollection();
-
             serviceCollection
                 .AddEntityFrameworkDesignTimeServices()
                 .AddDbContextDesignTimeServices(context);
@@ -33,9 +31,23 @@ namespace Migrator.Logic
             designTimeServices.ConfigureDesignTimeServices(serviceCollection);
 
             var serviceProvider = serviceCollection.BuildServiceProvider();
-            var sqlGenerator = serviceProvider.GetService<IMigrationsSqlGenerator>();
+            var migrator = serviceProvider.GetService<IMigrator>();
 
-            // sqlGenerator.Generate();
+            if (!Directory.Exists(migrationParams.OutputPath))
+            {
+                Directory.CreateDirectory(migrationParams.OutputPath);
+            }
+
+            foreach (var item in migrationParams.Migrations)
+            {
+                var migrationNames = item.Split(ScriptMigrationParams.MigrationNamesSplitter);
+                var migrationSql = migrator.GenerateScript(
+                                        fromMigration: migrationNames[0],
+                                        toMigration: migrationNames[1],
+                                        idempotent: true);
+
+                File.WriteAllText(Path.Combine(migrationParams.OutputPath, $"{migrationNames[1]}.sql"), migrationSql);
+            }
 
             return ExitCode.Success;
         }

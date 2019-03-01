@@ -3,25 +3,21 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 using System.Windows;
-using Toolbox.Extension.Logic.Scaffolding;
-using Toolbox.Extension.Logic.DatabaseServices;
-using Toolbox.Extension.Logic.Scaffolding.ViewModels;
-using Toolbox.Extension.UI.Scaffolding;
+using Toolbox.Extension.Logic.Migrations;
+using Toolbox.Extension.Logic.Migrations.ViewModels;
+using Toolbox.Extension.Resources;
+using Toolbox.Extension.UI.Migrations;
 using Toolbox.Extension.UI.Services;
 using Task = System.Threading.Tasks.Task;
-using Toolbox.Extension.Resources;
 
-namespace Toolbox.Extension
+namespace Toolbox.Extension.Commands
 {
-    /// <summary>
-    /// Command handler
-    /// </summary>
-    internal sealed class ScaffoldingMenuCommand : IDisposable
+    internal sealed class ScriptMigrationMenuCommand : IDisposable
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int ScaffoldingCommandId = 0x0100;
+        public const int ScriptMigrationgCommandId = 0x0300;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -48,14 +44,14 @@ namespace Toolbox.Extension
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandService">Command service to add command to, not null.</param>
-        private ScaffoldingMenuCommand(AsyncPackage package, OleMenuCommandService commandService, EnvDTE80.DTE2 ide)
+        private ScriptMigrationMenuCommand(AsyncPackage package, OleMenuCommandService commandService, EnvDTE80.DTE2 ide)
         {
             if (commandService == null) throw new ArgumentNullException(nameof(commandService));
 
             this.package = package ?? throw new ArgumentNullException(nameof(package));
             _ide = ide ?? throw new ArgumentNullException(nameof(ide));
 
-            var scaffoldingCommandID = new CommandID(CommandSet, ScaffoldingCommandId);
+            var scaffoldingCommandID = new CommandID(CommandSet, ScriptMigrationgCommandId);
             _scaffoldingMenuItem = new OleMenuCommand(MenuItemCallback, scaffoldingCommandID);
             _scaffoldingMenuItem.BeforeQueryStatus += QueryCommandStatus;
 
@@ -65,7 +61,7 @@ namespace Toolbox.Extension
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static ScaffoldingMenuCommand Instance
+        public static ScriptMigrationMenuCommand Instance
         {
             get;
             private set;
@@ -83,14 +79,14 @@ namespace Toolbox.Extension
             // Switch to the main thread - the call to AddCommand in MenuCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
-            Instance = new ScaffoldingMenuCommand(package, commandService, ide);
+            Instance = new ScriptMigrationMenuCommand(package, commandService, ide);
         }
 
         private void QueryCommandStatus(object sender, EventArgs e)
         {
-            if (sender is OleMenuCommand menuCommand && menuCommand.CommandID.ID == ScaffoldingCommandId)
-            {   
-                menuCommand.Enabled = isScaffoldingCommandEnabled();
+            if (sender is OleMenuCommand menuCommand && menuCommand.CommandID.ID == ScriptMigrationgCommandId)
+            {
+                menuCommand.Enabled = isMigrationCommandEnabled();
             }
         }
 
@@ -109,34 +105,35 @@ namespace Toolbox.Extension
                 var projects = solutionProcessor.GetAllSolutionProjects();
 
                 var messageBoxService = new MessageBoxService();
-                var dbService = new MsSqlServerService();
-                var scaffoldingVM = new ScaffoldingWizardViewModel(
-                    messageBoxService, dbService, dbService, new ScaffoldingService(), projects);
-                var scaffoldingWindow = new ScaffoldingWizard(scaffoldingVM);
+                var migrationService = new MigrationService(messageBoxService);
+
+                var viewModel = new ScriptMigrationViewModel(projects, solutionProcessor, migrationService, messageBoxService);
+                var window = new ScriptMigration(viewModel);
 
                 messageBoxService.ShowInfoMessageFunc =
-                    msg => showMessageBox(scaffoldingWindow, msg, MessageBoxImage.Information);
+                    msg => showMessageBox(window, msg, MessageBoxImage.Information);
                 messageBoxService.ShowErrorMessageFunc =
-                    msg => showMessageBox(scaffoldingWindow, msg, MessageBoxImage.Error);
+                    msg => showMessageBox(window, msg, MessageBoxImage.Error);
                 messageBoxService.ShowWarningMessageFunc =
-                    msg => showMessageBox(scaffoldingWindow, msg, MessageBoxImage.Warning);
+                    msg => showMessageBox(window, msg, MessageBoxImage.Warning);
 
-                scaffoldingWindow.ShowModal();
+                window.ShowModal();
             }
         }
 
-        private async Task showMessageBox(ScaffoldingWizard owner, string text, MessageBoxImage icon)
+        private async Task showMessageBox(ScriptMigration owner, string text, MessageBoxImage icon)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            MessageBox.Show(owner, text, Strings.DatabaseScaffoldingMenuItemTitle, MessageBoxButton.OK, icon);
+            MessageBox.Show(owner, text, Strings.ScriptMigrationMenuItemTitle, MessageBoxButton.OK, icon);
         }
 
-        private bool isScaffoldingCommandEnabled()
+        private bool isMigrationCommandEnabled()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
             if (_ide?.Solution != null)
             {
                 return _ide.Solution.IsOpen &&
+                    // _ide.Solution.SolutionBuild.BuildState == vsBuildState.vsBuildStateDone;
                     _ide.Solution.SolutionBuild.BuildState != vsBuildState.vsBuildStateInProgress;
             }
 

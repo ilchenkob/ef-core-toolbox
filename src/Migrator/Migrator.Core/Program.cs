@@ -3,6 +3,7 @@ using Migrator.Logic.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Migrator.Core
 {
@@ -34,7 +35,7 @@ namespace Migrator.Core
                 else if (args[0] == CommandType.FindMigrationSubtypes)
                 {
                     var commandParams = FindMigrationSubtypeParams.FromArgumentsArray(args);
-                    var types = TypeFinder.GetMigrationTypeFullNamesFromAssebly(commandParams.AssemblyFileName);
+                    var types = TypeFinder.GetMigrationByDbContextFromAssebly(commandParams.AssemblyFileName);
                     return writeResult(types);
                 }
             }
@@ -42,29 +43,45 @@ namespace Migrator.Core
             {
                 return ExitCode.CanNotFindDbContext;
             }
-            catch (FileNotFoundException exception)
+            catch (FileNotFoundException e)
             {
-                Console.WriteLine(exception.Message);
+                LogException(e);
                 return ExitCode.CanNotFindFile;
             }
-            catch (ArgumentException exception)
+            catch (ArgumentException e)
             {
-                Console.WriteLine(exception.Message);
+                LogException(e);
                 return ExitCode.InvalidArguments;
             }
-            catch (Exception exception)
+            catch (Exception e)
             {
-                Console.WriteLine(exception.Message);
+                LogException(e);
                 return ExitCode.Exception;
             }
 
             return ExitCode.InvalidCommand;
         }
 
+        private static int writeResult(Dictionary<string, List<string>> types)
+        {
+            var buffer = new StringBuilder();
+            foreach(var item in types)
+            {
+                buffer.Append($"{item.Key};{string.Join(";", item.Value)}|");
+            }
+            Console.WriteLine(buffer.ToString());
+            return ExitCode.Success;
+        }
+
         private static int writeResult(List<string> types)
         {
             Console.WriteLine(string.Join(";", types));
             return ExitCode.Success;
+        }
+
+        private static void LogException(Exception exception)
+        {
+            Console.WriteLine(exception.Message);
         }
     }
 }

@@ -120,6 +120,9 @@
   <data name="AddMigrationMenuItemTitle" xml:space="preserve">
     <value>Add migration</value>
   </data>
+  <data name="All" xml:space="preserve">
+    <value>All</value>
+  </data>
   <data name="Authentication" xml:space="preserve">
     <value>Authentication</value>
   </data>
@@ -168,6 +171,9 @@
   <data name="MigrationNamespace" xml:space="preserve">
     <value>Migration namespace</value>
   </data>
+  <data name="Migrations" xml:space="preserve">
+    <value>Migrations</value>
+  </data>
   <data name="MsSqlServer" xml:space="preserve">
     <value>Microsoft SQL Server</value>
   </data>
@@ -191,6 +197,9 @@
   </data>
   <data name="RememberConnection" xml:space="preserve">
     <value>Remember connection</value>
+  </data>
+  <data name="ScriptMigrationMenuItemTitle" xml:space="preserve">
+    <value>Script migration</value>
   </data>
   <data name="Server" xml:space="preserve">
     <value>Server</value>

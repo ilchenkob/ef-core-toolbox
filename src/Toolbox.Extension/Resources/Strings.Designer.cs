@@ -70,6 +70,15 @@ namespace Toolbox.Extension.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string All {
+            get {
+                return ResourceManager.GetString("All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Authentication.
         /// </summary>
         public static string Authentication {
@@ -214,6 +223,15 @@ namespace Toolbox.Extension.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Migrations.
+        /// </summary>
+        public static string Migrations {
+            get {
+                return ResourceManager.GetString("Migrations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Microsoft SQL Server.
         /// </summary>
         public static string MsSqlServer {
@@ -282,6 +300,15 @@ namespace Toolbox.Extension.Resources {
         public static string RememberConnection {
             get {
                 return ResourceManager.GetString("RememberConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Script migration.
+        /// </summary>
+        public static string ScriptMigrationMenuItemTitle {
+            get {
+                return ResourceManager.GetString("ScriptMigrationMenuItemTitle", resourceCulture);
             }
         }
         

@@ -1,13 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
+﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Migrations.Design;
 using Microsoft.EntityFrameworkCore.SqlServer.Design.Internal;
 using Microsoft.Extensions.DependencyInjection;
 using Migrator.Logic.Models;
-using System;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace Migrator.Logic
 {
@@ -18,12 +14,9 @@ namespace Migrator.Logic
             if (!File.Exists(migrationParams.AssemblyFileName))
                 return ExitCode.CanNotFindFile;
 
-            var assembly = Assembly.LoadFile(migrationParams.AssemblyFileName);
-            var contextType = assembly.GetExportedTypes().FirstOrDefault(t => t.FullName == migrationParams.DbContextTypeFullName);
-            var context = (DbContext)Activator.CreateInstance(contextType);
+            var context = DbContextFactory.CreateContextInstance(migrationParams.AssemblyFileName, migrationParams.DbContextTypeFullName);
 
             var serviceCollection = new ServiceCollection();
-
             serviceCollection
                 .AddEntityFrameworkDesignTimeServices()
                 .AddDbContextDesignTimeServices(context);

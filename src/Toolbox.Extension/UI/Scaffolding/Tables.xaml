@@ -12,11 +12,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Label Grid.Row="0" Content="{x:Static resx:Strings.Tables}" Margin="0,-4,0,4"/>
-        <TreeView Grid.Row="1" x:Name="tree" Background="White"
+        <TreeView Grid.Row="1" x:Name="tree" Background="White" Padding="0,4"
                   ItemsSource="{Binding Schemas}">
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Childs}">
                     <CheckBox Checked="TreeCheckBox_Checked" Unchecked="TreeCheckBox_Unchecked"
+                              Margin="0,2"
                               IsChecked="{Binding IsEnabled, Mode=OneWay}"
                               Content="{Binding Title}" />
                 </HierarchicalDataTemplate>
