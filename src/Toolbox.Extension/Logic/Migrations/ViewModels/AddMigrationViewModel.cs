@@ -80,8 +80,7 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
                 if (_selectedDbContextName != value)
                 {
                     _selectedDbContextName = value;
-
-                    if (_selectedDbContextName != null && !_selectedDbContextName.StartsWith("<"))
+                    if (_selectedDbContextName != null)
                     {
                         var contextNamespace = _projectDbContexts[SelectedProjectName].FirstOrDefault(n => n.ClassName == value).Namespace ?? string.Empty;
                         MigrationNamespace = contextNamespace.Length > 0
@@ -211,13 +210,18 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
         {
             if (!_projectDbContexts.ContainsKey(projectName))
             {
+                IsLoading = true;
 #pragma warning disable VSTHRD110 // Observe result of async calls
                 Task.Run(async () =>
 #pragma warning restore VSTHRD110 // Observe result of async calls
                 {
                     var selectedProject = _allSolutionProjects.FirstOrDefault(p => p.DisplayName == projectName);
                     if (selectedProject == null)
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        IsLoading = false;
                         return;
+                    }
 
                     var classNames = _migrationService.GetDbContextNames(new FindDbContextSubtypeParams
                     {
@@ -225,9 +229,6 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
                     });
                     _projectDbContexts[projectName] = classNames.Select(n =>
                     {
-                        if (n.StartsWith("<"))
-                            return new DbContextInfo { ClassName = n };
-                    
                         var lastDotIndex = n.LastIndexOf('.');
                         return new DbContextInfo
                         {
@@ -239,6 +240,7 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
 
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     refreshDbContextNamesCollection(projectName);
+                    IsLoading = false;
                 });
             }
             else

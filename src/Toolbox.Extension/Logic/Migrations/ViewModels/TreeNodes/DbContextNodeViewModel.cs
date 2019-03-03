@@ -10,11 +10,12 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels.TreeNodes
     {
         private bool _detectChanges = true;
 
-        public DbContextNodeViewModel(string title, IEnumerable<string> migrations, Action<bool> stateChangedCallback)
+        public DbContextNodeViewModel(string title, string subtitle, IEnumerable<string> migrations, Action<bool> stateChangedCallback)
         {
             Title = title;
             Childs = new ObservableCollection<NodeViewModel>(
-                migrations.Select(t => new NodeViewModel(t, s => checkState())));
+                migrations.Select(t => new NodeViewModel(t, subtitle, s => checkState())));
+            Subtitle = subtitle;
             StateChanged = stateChangedCallback;
         }
 

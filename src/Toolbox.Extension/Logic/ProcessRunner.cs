@@ -1,6 +1,7 @@
 ﻿using Migrator.Logic.Models;
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace Toolbox.Extension.Logic
 {
@@ -15,35 +16,46 @@ namespace Toolbox.Extension.Logic
         {
             _currentParams = migratorParams;
 
-            using (var process = new Process())
+            try
             {
-                try
+                using (var process = new Process())
                 {
-                    process.StartInfo = new ProcessStartInfo("dotnet")
+                    try
                     {
-                        Arguments = $"{Constants.MigratorAssembly} {migratorParams.ToArgumentString()}",
-                        CreateNoWindow = true,
-                        RedirectStandardOutput = true,
-                        RedirectStandardError = true,
-                        UseShellExecute = false
-                    };
+                        process.StartInfo = new ProcessStartInfo("dotnet")
+                        {
+                            Arguments = $"\"{Constants.MigratorAssembly}\" {migratorParams.ToArgumentString()}",
+#if !DEBUG
+                            WorkingDirectory = Path.GetDirectoryName(typeof(ProcessRunner).Assembly.Location),
+#endif
+                            CreateNoWindow = true,
+                            RedirectStandardOutput = true,
+                            RedirectStandardError = true,
+                            UseShellExecute = false
+                        };
 
-                    process.OutputDataReceived += onOutputDataReceived;
-                    process.ErrorDataReceived += onErrorDataReceived;
+                        process.OutputDataReceived += onOutputDataReceived;
+                        process.ErrorDataReceived += onErrorDataReceived;
 
-                    process.Start();
-                    process.BeginOutputReadLine();
-                    process.BeginErrorReadLine();
+                        process.Start();
+                        process.BeginOutputReadLine();
+                        process.BeginErrorReadLine();
 
-                    process.WaitForExit();
+                        process.WaitForExit();
+                    }
+                    finally
+                    {
+                        process.OutputDataReceived -= onOutputDataReceived;
+                        process.ErrorDataReceived -= onErrorDataReceived;
+                    }
+
+                    return process.ExitCode;
                 }
-                finally
-                {
-                    process.OutputDataReceived -= onOutputDataReceived;
-                    process.ErrorDataReceived -= onErrorDataReceived;
-                }
-
-                return process.ExitCode;
+            }
+            catch (Exception ex)
+            {
+                OutputDataCallback?.Invoke(_currentParams, ex.Message);
+                return ExitCode.Exception;
             }
         }
 

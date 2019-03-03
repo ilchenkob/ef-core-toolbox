@@ -12,11 +12,6 @@ namespace Migrator.Logic
     {
         public int Run(ScriptMigrationParams migrationParams)
         {
-            //migrationParams.AssemblyFileName = @"C:\Users\Vitalii_Ilchenko\source\repos\ConsoleApp9\ConsoleAppcore\bin\Debug\netcoreapp2.1\ConsoleAppcore.dll";
-            //migrationParams.OutputPath = @"C:\Users\Vitalii_Ilchenko\source\repos\ConsoleApp9\ConsoleAppcore\Migrations\Scripts";
-            //migrationParams.Migrations = new string[] { "20190227211052_SomeTest" };
-            //migrationParams.DbContextFullName = "ConsoleAppcore.Test1.DbContextTest1";
-
             if (!File.Exists(migrationParams.AssemblyFileName))
                 return ExitCode.CanNotFindFile;
 

@@ -34,6 +34,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <controls:ComboBoxItem Grid.Row="0" Title="{x:Static resx:Strings.Project}"
                                    Items="{Binding ProjectNames}"
@@ -49,7 +50,8 @@
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-            <controls:DirectoryInput Grid.Row="3"
+            <Label Grid.Row="3" FontStyle="Italic" Content="{x:Static resx:Strings.ScriptMigrationsHint}" Margin="0,2,0,4"/>
+            <controls:DirectoryInput Grid.Row="4"
                 Path="{Binding OutputPath, Mode=TwoWay}"
                 IsEnabled="{Binding SelectedProjectName, Converter={StaticResource SelectedContextToInputEnableConverter}}"/>
         </Grid>

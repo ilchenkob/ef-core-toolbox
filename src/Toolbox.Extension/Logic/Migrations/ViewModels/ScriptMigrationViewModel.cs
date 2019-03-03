@@ -1,6 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using Migrator.Logic.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -8,7 +7,6 @@ using System.Linq;
 using System.Windows.Input;
 using Toolbox.Extension.Logic.Migrations.ViewModels.TreeNodes;
 using Toolbox.Extension.Logic.Models;
-using Toolbox.Extension.Logic.Scaffolding.ViewModels.TreeNodes;
 using Toolbox.Extension.Logic.ViewModels;
 using Toolbox.Extension.Logic.ViewModels.TreeNodes;
 using Toolbox.Extension.UI.Services;
@@ -118,7 +116,7 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
                     var exitCode = _migrationService.ScriptMigration(new ScriptMigrationParams
                     {
                         AssemblyFileName = selectedProject.AssemblyNameWithPath,
-                        DbContextFullName = selectedDbContext.Title,
+                        DbContextFullName = selectedDbContext.Subtitle,
                         Migrations = getSelectedMigrationsList(selectedDbContext.Childs).ToArray(),
                         OutputPath = this.OutputPath
                     });
@@ -137,13 +135,18 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
         {
             if (!_projectMigrations.ContainsKey(projectName))
             {
+                IsLoading = true;
 #pragma warning disable VSTHRD110 // Observe result of async calls
                 Task.Run(async () =>
 #pragma warning restore VSTHRD110 // Observe result of async calls
                 {
                     var selectedProject = _allSolutionProjects.FirstOrDefault(p => p.DisplayName == projectName);
                     if (selectedProject == null)
+                    {
+                        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+                        IsLoading = false;
                         return;
+                    }
 
                     var contextMigrations = _migrationService.GetMigrationNames(new FindMigrationSubtypeParams
                     {
@@ -153,6 +156,7 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
 
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                     refreshMigrationsCollection(projectName);
+                    IsLoading = false;
                 });
             }
             else
@@ -164,13 +168,20 @@ namespace Toolbox.Extension.Logic.Migrations.ViewModels
         private void refreshMigrationsCollection(string projectName)
         {
             Migrations.Clear();
-            foreach (var item in _projectMigrations[projectName])
+            foreach (var item in _projectMigrations[projectName].OrderBy(m => m.Key.Substring(m.Key.LastIndexOf('.') + 1)))
             {
                 Migrations.Add(new DbContextNodeViewModel(
-                    item.Key,
-                    item.Value.Select(m => m.Insert(m.IndexOf("_"),": ")).OrderBy(m => m),
-                    isChecked =>
+                    title: item.Key.Substring(item.Key.LastIndexOf('.') + 1),
+                    subtitle: item.Key,
+                    migrations: item.Value.Select(m => m.Insert(m.IndexOf("_"),": ")).OrderBy(m => m),
+                    stateChangedCallback: isChecked =>
                     {
+                        if (isChecked)
+                        {
+                            foreach (var otherContext in Migrations.Where(c => c.Subtitle != item.Key))
+                                otherContext.ChangeState(false); // uncheck other contexts
+                        }
+
                         NotifyPropertyChanged(() => IsValid);
                     }));
             }

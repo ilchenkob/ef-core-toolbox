@@ -81,6 +81,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="IProjectBuilder.cs" />
     <Compile Include="Logic\DatabaseServices\IDatabaseConnector.cs" />
+    <Compile Include="Logic\Migrations\IMigrationService.cs" />
     <Compile Include="Logic\Migrations\MigrationService.cs" />
     <Compile Include="Logic\Migrations\ViewModels\AddMigrationViewModel.cs" />
     <Compile Include="Logic\Migrations\ViewModels\ScriptMigrationViewModel.cs" />

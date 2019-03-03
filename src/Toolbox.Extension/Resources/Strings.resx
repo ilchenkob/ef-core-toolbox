@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddMigrationHint" xml:space="preserve">
+    <value>If you do not see your database context in the list, build the project and run this tool again.</value>
+  </data>
   <data name="AddMigrationMenuItemTitle" xml:space="preserve">
     <value>Add migration</value>
   </data>
@@ -135,9 +138,6 @@
   <data name="CancelButtonCaption" xml:space="preserve">
     <value>Cancel</value>
   </data>
-  <data name="CantBuildProjectComboBoxItem" xml:space="preserve">
-    <value>&lt; Make sure the project builds fine and run this wizard again &gt;</value>
-  </data>
   <data name="Database" xml:space="preserve">
     <value>Database</value>
   </data>
@@ -149,9 +149,6 @@
   </data>
   <data name="DatabaseScaffoldingMenuItemTitle" xml:space="preserve">
     <value>Database context and models scaffolding</value>
-  </data>
-  <data name="DbContextNotFoundComboBoxItem" xml:space="preserve">
-    <value>&lt; There is no public DbContext found. Add it, build the project and run this wizard again &gt;</value>
   </data>
   <data name="MessageCantBuildProject" xml:space="preserve">
     <value>Can not build the following project: {0}</value>
@@ -200,6 +197,9 @@
   </data>
   <data name="ScriptMigrationMenuItemTitle" xml:space="preserve">
     <value>Script migration</value>
+  </data>
+  <data name="ScriptMigrationsHint" xml:space="preserve">
+    <value>If you do not see your migration in the list, build the project and run this tool again.</value>
   </data>
   <data name="Server" xml:space="preserve">
     <value>Server</value>
