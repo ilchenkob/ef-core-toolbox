@@ -1,6 +1,6 @@
 ## EF Core Toolbox
 
-[![Build status](https://ci.appveyor.com/api/projects/status/4f1pqkg8kfsuv9kr/branch/master?svg=true)](https://ci.appveyor.com/project/ilchenkob/ef-core-toolbox/branch/master)   [![Marketplace](https://img.shields.io/visual-studio-marketplace/d/VitaliiIlchenko.ef-core-toolbox.svg?color=blue)](https://marketplace.visualstudio.com/items?itemName=VitaliiIlchenko.ef-core-toolbox)
+[![Build status](https://ci.appveyor.com/api/projects/status/4f1pqkg8kfsuv9kr/branch/master?svg=true)](https://ci.appveyor.com/project/ilchenkob/ef-core-toolbox/branch/master)  [![Marketplace](https://img.shields.io/visual-studio-marketplace/v/VitaliiIlchenko.ef-core-toolbox.svg)](https://marketplace.visualstudio.com/items?itemName=VitaliiIlchenko.ef-core-toolbox) [![Marketplace](https://img.shields.io/visual-studio-marketplace/d/VitaliiIlchenko.ef-core-toolbox.svg?color=blue)](https://marketplace.visualstudio.com/items?itemName=VitaliiIlchenko.ef-core-toolbox)
 
 It's already available at [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=VitaliiIlchenko.ef-core-toolbox)
 
