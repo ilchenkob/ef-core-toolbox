@@ -107,7 +107,7 @@ Task(BuildSteps.CreateExtensionPackage)
   .IsDependentOn(BuildSteps.UpdateManifest)
   .Does(() => Zip(
       ArtifactsDir,
-      $"{OutputDir}/Toolbox.Extension.zip",
+      $"{OutputDir}/Toolbox.Extension.vsix",
       GetFiles($"{ArtifactsDir}/*.*"))
   );
 
