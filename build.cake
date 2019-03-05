@@ -11,13 +11,13 @@ const string ToolboxExtensionProjectPath = "./src/Toolbox.Extension";
 const string ArtifactsDir = "./src/temp";
 const string OutputDir = "./output";
 
-string[] MigratorFileNames = new [] {
+readonly string[] MigratorFileNames = new [] {
   "Migrator.Core.deps.json",
   "Migrator.Core.dll",
   "Migrator.Core.runtimeconfig.json",
   "Migrator.Logic.dll"
 };
-string[] MigratorLibsFileNames = new [] {
+readonly string[] MigratorLibsFileNames = new [] {
   "hostfxr.dll",
   "hostpolicy.dll",
   "sni.dll",
@@ -40,17 +40,25 @@ class BuildSteps
   public const string CreateExtensionPackage = "CreateExtensionPackage";
 }
 
+string packageName = "";
+
+Setup(context =>
+{
+  var projectInfo = ParseProject($"{ToolboxExtensionProjectPath}/Toolbox.Extension.csproj");
+  packageName = projectInfo.AssemblyName;
+});
+
 Task(BuildSteps.Clean)
   .Does(() =>
 {
   CleanDirectory(ArtifactsDir);
   CleanDirectory(OutputDir);
 
-  CleanDirectories(MigratorProjectPath + "/**/bin");
-  CleanDirectories(MigratorProjectPath + "/**/obj");
+  CleanDirectories($"{MigratorProjectPath}/**/bin");
+  CleanDirectories($"{MigratorProjectPath}/**/obj");
 
-  CleanDirectories(ToolboxExtensionProjectPath + "/bin");
-  CleanDirectories(ToolboxExtensionProjectPath + "/obj");
+  CleanDirectories($"{ToolboxExtensionProjectPath}/bin");
+  CleanDirectories($"{ToolboxExtensionProjectPath}/obj");
 });
 
 Task(BuildSteps.RestoreNuget)
@@ -61,7 +69,7 @@ Task(BuildSteps.BuildSolution)
   .IsDependentOn(BuildSteps.RestoreNuget)
   .Does(() =>
 {
-  DotNetCorePublish(MigratorProjectPath + "/Migrator.Core/Migrator.Core.csproj", new DotNetCorePublishSettings
+  DotNetCorePublish($"{MigratorProjectPath}/Migrator.Core/Migrator.Core.csproj", new DotNetCorePublishSettings
   {
     Framework = "netcoreapp2.1",
     Configuration = BuildConfiguration,
@@ -70,7 +78,7 @@ Task(BuildSteps.BuildSolution)
     OutputDirectory = MigratorOutputPath
   });
 
-  MSBuild(ToolboxExtensionProjectPath + "/Toolbox.Extension.csproj", settings => settings
+  MSBuild($"{ToolboxExtensionProjectPath}/Toolbox.Extension.csproj", settings => settings
     .SetConfiguration(BuildConfiguration)
     .SetPlatformTarget(PlatformTarget.MSIL)
     .SetMSBuildPlatform(MSBuildPlatform.x86)
@@ -81,7 +89,7 @@ Task(BuildSteps.BuildSolution)
 
 Task(BuildSteps.MoveArtifactsToTempDir)
   .IsDependentOn(BuildSteps.BuildSolution)
-  .Does(() => Unzip(ToolboxExtensionProjectPath + $"/bin/{BuildConfiguration}/Toolbox.Extension.vsix", ArtifactsDir))
+  .Does(() => Unzip($"{ToolboxExtensionProjectPath}/bin/{BuildConfiguration}/{packageName}.vsix", ArtifactsDir))
   .DoesForEach(MigratorFileNames, (file) => CopyFile(MigratorOutputPath + $"/{file}", ArtifactsDir + $"/{file}"))
   .DoesForEach(MigratorLibsFileNames, (file) => CopyFile($"./src/Migrator/libs/{file}", ArtifactsDir + $"/{file}"));
 
@@ -106,9 +114,7 @@ Task(BuildSteps.UpdateManifest)
 Task(BuildSteps.CreateExtensionPackage)
   .IsDependentOn(BuildSteps.UpdateManifest)
   .Does(() => Zip(
-      ArtifactsDir,
-      $"{OutputDir}/Toolbox.Extension.vsix",
-      GetFiles($"{ArtifactsDir}/*.*"))
+      ArtifactsDir, $"{OutputDir}/{packageName}.vsix", GetFiles($"{ArtifactsDir}/*.*"))
   );
 
 Teardown(context => DeleteDirectory(ArtifactsDir, new DeleteDirectorySettings
