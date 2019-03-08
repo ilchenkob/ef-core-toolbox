@@ -1,13 +1,8 @@
 ## EF Core Toolbox
 
-|  Azure Pipelines  | AppVeyor  |
-| :---------------:|:---------:|
-| [![Build status](https://img.shields.io/azure-devops/build/ilchenkob0414/EF%20Core%20Toolbox/1.svg)](https://dev.azure.com/ilchenkob0414/EF%20Core%20Toolbox/_build/results) |  [![Build status](https://ci.appveyor.com/api/projects/status/4f1pqkg8kfsuv9kr/branch/master?svg=true)](https://ci.appveyor.com/project/ilchenkob/ef-core-toolbox/branch/master)   |
-
-
-| Visual Studio Marketplace  |
-| :-------------------------:|
-| [![Marketplace](https://img.shields.io/visual-studio-marketplace/v/VitaliiIlchenko.ef-core-toolbox.svg)](https://marketplace.visualstudio.com/items?itemName=VitaliiIlchenko.ef-core-toolbox)  [![Marketplace](https://img.shields.io/visual-studio-marketplace/d/VitaliiIlchenko.ef-core-toolbox.svg?color=blue)](https://marketplace.visualstudio.com/items?itemName=VitaliiIlchenko.ef-core-toolbox) |
+|  Azure Pipelines  | AppVeyor  | Visual Studio Marketplace  |
+| :---------------:|:---------:| :-------------------------:|
+| [![Build status](https://img.shields.io/azure-devops/build/ilchenkob0414/EF%20Core%20Toolbox/1.svg)](https://dev.azure.com/ilchenkob0414/EF%20Core%20Toolbox/_build/results) |  [![Build status](https://ci.appveyor.com/api/projects/status/4f1pqkg8kfsuv9kr/branch/master?svg=true)](https://ci.appveyor.com/project/ilchenkob/ef-core-toolbox/branch/master) |  [![Marketplace](https://img.shields.io/visual-studio-marketplace/v/VitaliiIlchenko.ef-core-toolbox.svg)](https://marketplace.visualstudio.com/items?itemName=VitaliiIlchenko.ef-core-toolbox)  [![Marketplace](https://img.shields.io/visual-studio-marketplace/d/VitaliiIlchenko.ef-core-toolbox.svg?color=blue)](https://marketplace.visualstudio.com/items?itemName=VitaliiIlchenko.ef-core-toolbox) |
 
 
 It's already available at [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=VitaliiIlchenko.ef-core-toolbox)
